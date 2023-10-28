@@ -26,6 +26,7 @@ export function ToastComponent() {
 
   return (
     <Toast
+      zIndex={100_000 + 1}
       key={currentToast.id}
       duration={currentToast.duration || 99999999999999}
       enterStyle={{ opacity: 0, scale: 0.5, y: -25 }}
@@ -37,6 +38,7 @@ export function ToastComponent() {
       viewportName={currentToast.viewportName}
       backgroundColor={currentToast.backgroundColor || theme.colors.accent}
       onSwipeEnd={(event) => debouncedDismiss(event)}
+      type={"foreground"}
     >
       <XStack
         alignItems="center"

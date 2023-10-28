@@ -21,6 +21,7 @@ import {
 
 import AudioPlayer from "../components/AudioPlayer";
 import { BaseStack } from "../components/BaseStack";
+import { BottomSheetComponent } from "../components/BottomSheet";
 import DocumentScanButton from "../components/DocumentScanButton";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { ToastComponent } from "../components/Toast";
@@ -43,7 +44,10 @@ import {
 } from "../utils/llama";
 import { getTheme } from "../utils/themes";
 import { initializeTrackPlayer } from "../utils/trackplayer";
-import { initializeWhisper } from "../utils/whisper";
+import {
+  initializeWhisper,
+  stopWhisperRealtimeTranscription
+} from "../utils/whisper";
 
 export default function Home() {
   const llamaContext = useRecoilValue(llamaContextState);
@@ -115,6 +119,7 @@ export default function Home() {
     <LoadingScreen />
   ) : (
     <BaseStack>
+      <ToastComponent />
       <YStack
         space="$5"
         flexGrow={1}
@@ -124,16 +129,15 @@ export default function Home() {
           space="$5"
           flexGrow={1}
         >
-          <ScrollView
-            flexGrow={1}
-            borderRadius="$5"
-            padding="$2"
-            borderWidth={1}
-            borderColor="gray"
-          >
-            <WhisperTranscript />
-          </ScrollView>
-          <AudioPlayer />
+          <BottomSheetComponent
+            internalComponent={
+              <>
+                <WhisperTranscript />
+                <AudioPlayer />
+              </>
+            }
+            onCloseStopFunction={stopWhisperRealtimeTranscription}
+          />
         </YStack>
 
         <YStack
@@ -304,7 +308,6 @@ export default function Home() {
           </YGroup.Item>
         </YGroup>
       </YStack>
-      <ToastComponent />
     </BaseStack>
   );
 }

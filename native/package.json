@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@react-native-ml-kit/text-recognition": "^1.5.0",
+        "@rnhooks/keyboard": "^1.1.0",
         "@tamagui/animations-react-native": "^1.49.10",
         "@tamagui/babel-plugin": "^1.49.10",
         "@tamagui/config": "^1.49.10",
