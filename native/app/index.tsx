@@ -28,6 +28,7 @@ import { ToastComponent } from "../components/Toast";
 import WhisperRecordButton from "../components/WhisperRecordButton";
 import WhisperTranscript from "../components/WhisperTranscript";
 import {
+  bottomSheetContentState,
   expectedDataBytesState,
   llamaContextState,
   llamaInputState,
@@ -35,7 +36,8 @@ import {
   modelsErrorsState,
   modelsLoadedState,
   receivedDataBytesState,
-  themeState
+  themeState,
+  whisperTranscriptState
 } from "../utils/atoms";
 import {
   initializeLlama,
@@ -46,6 +48,7 @@ import { getTheme } from "../utils/themes";
 import { initializeTrackPlayer } from "../utils/trackplayer";
 import {
   initializeWhisper,
+  mapWhisperTranscriptToProcessingState,
   stopWhisperRealtimeTranscription
 } from "../utils/whisper";
 
@@ -60,6 +63,19 @@ export default function Home() {
   const setModelsError = useSetRecoilState(modelsErrorsState);
   const setExpectedDataBytes = useSetRecoilState(expectedDataBytesState);
   const setReceivedDataBytes = useSetRecoilState(receivedDataBytesState);
+  const whisperTranscript = useRecoilValue(whisperTranscriptState);
+
+  const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
+    bottomSheetContentState
+  );
+
+  useEffect(() => {
+    console.log("eeeeeeeeee");
+    if (mapWhisperTranscriptToProcessingState(whisperTranscript) === "done") {
+      setLlamaInput(whisperTranscript.data.result);
+      realtimeLlamaInference();
+    }
+  }, [whisperTranscript, setLlamaInput]);
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
@@ -115,6 +131,66 @@ export default function Home() {
   //   const receivedDataBytes = useRecoilValue(receivedDataBytesState);
   //   console.log(receivedDataBytes, expectedDataBytes);
 
+  let bottomSheetInternals: JSX.Element = <></>;
+
+  switch (bottomSheetContent) {
+    case "options":
+      bottomSheetInternals = (
+        <>
+          <Text>This is a placeholder for options</Text>
+          <Button
+            onPress={() => {
+              setBottomSheetContent("transcribe");
+            }}
+          >
+            Continue
+          </Button>
+        </>
+      );
+      break;
+    case "transcribe":
+      bottomSheetInternals = (
+        <>
+          <WhisperTranscript />
+          <AudioPlayer />
+        </>
+      );
+      break;
+    case "photo":
+      bottomSheetInternals = (
+        <>
+          <Text>This is a placeholder for photo</Text>
+          <Button
+            onPress={() => {
+              setBottomSheetContent("summary");
+            }}
+          >
+            Continue
+          </Button>
+        </>
+      );
+      break;
+    case "summary":
+      bottomSheetInternals = (
+        <>
+          <Text>Topic: {llamaOutput.topic}</Text>
+          <ScrollView
+            ref={(ref) => {
+              this.scrollView = ref;
+            }}
+            onContentSizeChange={() =>
+              this.scrollView.scrollToEnd({ animated: true })
+            }
+            flexGrow={1}
+            padding="$2"
+          >
+            <Text>{llamaOutput.summary}</Text>
+          </ScrollView>
+        </>
+      );
+      break;
+  }
+
   return !modelsLoaded ? (
     <LoadingScreen />
   ) : (
@@ -130,13 +206,10 @@ export default function Home() {
           flexGrow={1}
         >
           <BottomSheetComponent
-            internalComponent={
-              <>
-                <WhisperTranscript />
-                <AudioPlayer />
-              </>
-            }
-            onCloseStopFunction={stopWhisperRealtimeTranscription}
+            internalComponent={bottomSheetInternals}
+            onCloseStopFunction={() => {
+              stopWhisperRealtimeTranscription();
+            }}
           />
         </YStack>
 
@@ -229,22 +302,6 @@ export default function Home() {
               </Button>
             </Group.Item>
           </Group>
-          <Text>Topic: {llamaOutput.topic}</Text>
-          <ScrollView
-            ref={(ref) => {
-              this.scrollView = ref;
-            }}
-            onContentSizeChange={() =>
-              this.scrollView.scrollToEnd({ animated: true })
-            }
-            flexGrow={1}
-            borderRadius="$5"
-            padding="$2"
-            borderWidth={1}
-            borderColor="gray"
-          >
-            <Text>{llamaOutput.summary}</Text>
-          </ScrollView>
         </YStack>
       </YStack>
       <YStack

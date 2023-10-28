@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+import { useColorScheme } from "react-native";
 import TrackPlayer, { useProgress } from "react-native-track-player";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { ScrollView, Text } from "tamagui";
+import { Sheet, Text } from "tamagui";
 
 import { llamaInputState, whisperTranscriptState } from "../utils/atoms";
 import { realtimeLlamaInference } from "../utils/llama";
+import { getTheme } from "../utils/themes";
 import { mapWhisperTranscriptToProcessingState } from "../utils/whisper";
 
 export default function WhisperTranscript() {
@@ -12,15 +14,11 @@ export default function WhisperTranscript() {
   const setLlamaInput = useSetRecoilState(llamaInputState);
   const playerProgress = useProgress(0.01);
 
-  useEffect(() => {
-    if (mapWhisperTranscriptToProcessingState(whisperTranscript) === "done") {
-      setLlamaInput(whisperTranscript.data.result);
-      realtimeLlamaInference();
-    }
-  }, [whisperTranscript, setLlamaInput]);
+  const colorScheme = useColorScheme();
+  const theme = getTheme(colorScheme);
 
   return (
-    <ScrollView>
+    <Sheet.ScrollView>
       {whisperTranscript && whisperTranscript.data ? (
         <Text>
           {whisperTranscript.data.segments.map((segment, index) => {
@@ -35,10 +33,10 @@ export default function WhisperTranscript() {
                   TrackPlayer.seekTo(segment.t0 / 100);
                   TrackPlayer.play();
                 }}
-                color={
+                backgroundColor={
                   playerProgress.position * 100 >= segment.t0 &&
                   playerProgress.position * 100 < segment.t1
-                    ? "green"
+                    ? theme.pallete.green[700]
                     : undefined
                 }
               >
@@ -50,6 +48,6 @@ export default function WhisperTranscript() {
       ) : (
         <Text>Transcript not available</Text>
       )}
-    </ScrollView>
+    </Sheet.ScrollView>
   );
 }

@@ -127,23 +127,27 @@ export default function AudioPlayer() {
   }
 
   return (
-    <YStack space="$4">
+    <YStack
+      space="$4"
+      width={"100%"}
+      paddingVertical="$4"
+    >
+      <XStack
+        alignItems="center"
+        space="$2"
+      >
+        <Circle
+          backgroundColor={statusColor[500]}
+          borderColor={statusColor[400]}
+          borderWidth={1}
+          size="$0.75"
+        />
+        <Text flexGrow={1}>{statusText}</Text>
+      </XStack>
       <XStack
         space="$4"
         alignItems="center"
       >
-        <XStack
-          alignItems="center"
-          space="$2"
-        >
-          <Circle
-            backgroundColor={statusColor[500]}
-            borderColor={statusColor[400]}
-            borderWidth={1}
-            size="$0.75"
-          />
-          <Text>{statusText}</Text>
-        </XStack>
         <Slider
           disabled={playerDisabled}
           opacity={playerDisabled ? 0.5 : 1}

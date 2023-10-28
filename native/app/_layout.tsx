@@ -39,7 +39,7 @@ export default function Layout() {
       <TamaguiProvider config={config}>
         <ToastProvider
           swipeDirection="horizontal"
-          swipeThreshold={80}
+          swipeThreshold={100}
         >
           <RecoilNexus />
           <StatusBar

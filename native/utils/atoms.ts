@@ -1,11 +1,9 @@
-import { SwipeDirection } from "@tamagui/toast/types/ToastProvider";
 import { LlamaContext } from "llama.rn/src";
 import { atom } from "recoil";
 import { WhisperContext } from "whisper.rn/src";
 
 import {
   LlamaResponse,
-  ToastInformation,
   WhisperController,
   WhisperTranscriptionStatus
 } from "./types";
@@ -80,4 +78,11 @@ export const themeState = atom<string>({
 export const bottomSheetOpenState = atom<boolean>({
   key: "bottomSheetOpenState",
   default: false
+});
+
+export const bottomSheetContentState = atom<
+  "options" | "transcribe" | "photo" | "summary"
+>({
+  key: "bottomSheetContentState",
+  default: "options"
 });

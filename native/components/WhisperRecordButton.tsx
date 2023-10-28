@@ -5,7 +5,11 @@ import { useToastController } from "@tamagui/toast";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Button, YGroup } from "tamagui";
 
-import { bottomSheetOpenState, whisperTranscriptState } from "../utils/atoms";
+import {
+  bottomSheetContentState,
+  bottomSheetOpenState,
+  whisperTranscriptState
+} from "../utils/atoms";
 import { getTheme } from "../utils/themes";
 import {
   mapWhisperTranscriptToProcessingState,
@@ -29,12 +33,20 @@ export default function WhisperRecordButton() {
       callbackfn: () => {
         startWhisperRealtimeTranscription();
         currentToast.show("Recording", {
-          message: "slide to stop ->",
+          message: "Slide To Stop",
           leftIcon: <Mic />,
           backgroundColor: theme.pallete.amber[500],
           onDismiss: () => {
-            console.log("slid to the right");
+            currentToast.show("Processing", {
+              leftIcon: <Loader />,
+              backgroundColor: theme.pallete.blue[500],
+              color: theme.colors.text,
+              onDismiss: (event) => {
+                event.preventDefault();
+              }
+            });
             stopWhisperRealtimeTranscription();
+            setBottomSheetContent("summary");
           }
         });
       }
@@ -42,6 +54,9 @@ export default function WhisperRecordButton() {
   const currentToast = useToastController();
   const [bottomSheetOpen, setBottomSheetOpen] =
     useRecoilState(bottomSheetOpenState);
+  const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
+    bottomSheetContentState
+  );
 
   const theme = getTheme(colorScheme);
 
@@ -58,7 +73,7 @@ export default function WhisperRecordButton() {
             startWhisperRealtimeTranscription();
             setBottomSheetOpen(true);
             currentToast.show("Recording", {
-              message: "slide to stop ->",
+              message: "Slide To Stop",
               leftIcon: <Mic />,
               backgroundColor: theme.pallete.amber[500],
               onDismiss: () => {
@@ -71,6 +86,7 @@ export default function WhisperRecordButton() {
                   }
                 });
                 stopWhisperRealtimeTranscription();
+                setBottomSheetContent("summary");
               }
             });
           }
@@ -121,6 +137,7 @@ export default function WhisperRecordButton() {
                   }
                 });
                 stopWhisperRealtimeTranscription();
+                setBottomSheetContent("summary");
               }
             });
           }

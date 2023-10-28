@@ -84,6 +84,7 @@ export async function resetLlama() {
 export async function realtimeLlamaInference() {
   const llamaContext = getRecoil(llamaContextState);
   const llamaInput = getRecoil(llamaInputState);
+  console.log("Llama input: " + llamaInput);
 
   setRecoil(llamaOutputState, {
     topic: "",
