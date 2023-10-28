@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { Check, Loader, Mic } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Button, YGroup } from "tamagui";
 
-import { whisperTranscriptState } from "../utils/atoms";
+import { bottomSheetOpenState, whisperTranscriptState } from "../utils/atoms";
 import { getTheme } from "../utils/themes";
 import {
   mapWhisperTranscriptToProcessingState,
@@ -40,6 +40,8 @@ export default function WhisperRecordButton() {
       }
     });
   const currentToast = useToastController();
+  const [bottomSheetOpen, setBottomSheetOpen] =
+    useRecoilState(bottomSheetOpenState);
 
   const theme = getTheme(colorScheme);
 
@@ -54,6 +56,7 @@ export default function WhisperRecordButton() {
           buttonDisabled: false,
           callbackfn: () => {
             startWhisperRealtimeTranscription();
+            setBottomSheetOpen(true);
             currentToast.show("Recording", {
               message: "slide to stop ->",
               leftIcon: <Mic />,
@@ -103,6 +106,7 @@ export default function WhisperRecordButton() {
           buttonDisabled: false,
           callbackfn: () => {
             startWhisperRealtimeTranscription();
+            setBottomSheetOpen(true);
             currentToast.show("Recording", {
               message: "slide to stop",
               leftIcon: <Mic />,
