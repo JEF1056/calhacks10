@@ -1,0 +1,36 @@
+name: listen
+channels:
+  - pytorch
+  - conda-forge
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - cudatoolkit-dev=11.7.0
+  - pip:
+      - torch>=2.0.0,!=1.8.0
+      - tensorflow>=2.12.0
+      - tqdm
+      - numpy
+      - gguf
+      - pandas
+      - tensorrt
+      - transformers==4.31.0
+      - tensorboard
+      - bitsandbytes==0.40.0
+      - accelerate==0.21.0
+      - nvidia-cudnn-cu11
+      - protobuf==3.20.*
+      - unidecode
+      - onnx>=0.0.0,<1.14.0
+      - onnxruntime
+      - optimum
+      - bitsandbytes
+      - pytorch-extension
+      - scipy
+      - evaluate==0.4.0
+      - wandb
+      - fire
+      - loralib
+      - git+https://github.com/huggingface/peft.git

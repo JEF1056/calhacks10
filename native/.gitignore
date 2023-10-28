@@ -1,0 +1,26 @@
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+.yarn
+
+# idea
+.idea/
+
+# macOS
+.DS_Store
+
+yarn-error.log
+
+*.apk
+# Expo
+.expo
+dist/
+web-build/

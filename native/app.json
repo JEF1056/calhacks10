@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "scheme": "tamagui-app",
+    "userInterfaceStyle": "automatic",
+    "androidStatusBar": {
+      "backgroundColor": "#1f2020",
+      "translucent": false,
+      "barStyle": "light-content"
+    },
+    "splash": {
+      "backgroundColor": "#1f2020",
+      "image": "./assets/splash.png",
+      "resizeMode": "contain"
+    },
+    "icon": "./assets/icon.png",
+    "name": "native",
+    "slug": "native",
+    "plugins": [
+      "expo-router"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b609deed-e793-4388-b000-416c73e3c292"
+      }
+    },
+    "android": {
+      "package": "com.jfan.listen",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon-android.png",
+        "monochromeImage": "./assets/icon-android-monochrome.png",
+        "backgroundColor": "#1f2020"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.jfan.listen",
+      "entitlements": [
+        "com.apple.developer.kernel.extended-virtual-addressing"
+      ],
+      "supportsTablet": true,
+      "icon": "./assets/icon-ios.png"
+    }
+  }
+}
