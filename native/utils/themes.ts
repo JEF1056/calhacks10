@@ -313,7 +313,7 @@ const themesBuilder = createThemeBuilder()
       "#F2E3CF",
       "#1F2020",
       "#F1F4EF",
-      "#DCDCC8",
+      "#98cac8",
       "#9D9680",
       "#D0C4E2",
       "#D792BE",
