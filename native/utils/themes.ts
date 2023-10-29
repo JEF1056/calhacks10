@@ -301,12 +301,12 @@ const themesBuilder = createThemeBuilder()
       "#736C6C", //neutral
       "#F1F4EF", //text
       "#1F2020", //text dark
-      "#169297", //primary
-      "#4E8098", //secondary
-      "#D792BE", //accent
-      "#0CA789", //secondary accent
-      "#EAA324", //constrast
-      "#FAC710" //secondary contrast
+      "#517EA0", //primary
+      "#558A6B", //secondary
+      "#C3B5A5", //accent
+      "#C5D5E2", //secondary accent
+      "#789EBB", //constrast
+      "#65A17E" //secondary contrast
     ],
     light: [
       "#EAE4D6", //background
