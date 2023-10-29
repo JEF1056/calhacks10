@@ -1,24 +1,27 @@
-import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import TrackPlayer, { useProgress } from "react-native-track-player";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { Sheet, Text } from "tamagui";
 
-import { llamaInputState, whisperTranscriptState } from "../utils/atoms";
-import { realtimeLlamaInference } from "../utils/llama";
+import { whisperTranscriptState } from "../utils/atoms";
 import { getTheme } from "../utils/themes";
-import { mapWhisperTranscriptToProcessingState } from "../utils/whisper";
 
 export default function WhisperTranscript() {
   const whisperTranscript = useRecoilValue(whisperTranscriptState);
-  const setLlamaInput = useSetRecoilState(llamaInputState);
   const playerProgress = useProgress(0.01);
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
 
   return (
-    <Sheet.ScrollView>
+    <Sheet.ScrollView
+      ref={(ref) => {
+        this.scrollView = ref;
+      }}
+      onContentSizeChange={() =>
+        this.scrollView.scrollToEnd({ animated: true })
+      }
+    >
       {whisperTranscript && whisperTranscript.data ? (
         <Text>
           {whisperTranscript.data.segments.map((segment, index) => {
