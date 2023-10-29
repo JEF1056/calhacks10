@@ -297,28 +297,28 @@ const pallete = {
 const themesBuilder = createThemeBuilder()
   .addPalettes({
     dark: [
-      "#1F2020",
-      "#736C6C",
-      "#F1F4EF",
-      "#1F2020",
-      "#9D9680",
-      "#DCDCC8",
-      "#D792BE",
-      "#D0C4E2",
-      "#FAF5F0",
-      "#F2E3CF"
+      "#1F2020", //background
+      "#736C6C", //neutral
+      "#F1F4EF", //text
+      "#1F2020", //text dark
+      "#169297", //primary
+      "#4E8098", //secondary
+      "#D792BE", //accent
+      "#0CA789", //secondary accent
+      "#EAA324", //constrast
+      "#FAC710" //secondary contrast
     ],
     light: [
-      "#FAF5F0",
-      "#F2E3CF",
-      "#1F2020",
-      "#F1F4EF",
-      "#98cac8",
-      "#9D9680",
-      "#D0C4E2",
-      "#D792BE",
-      "#736C6C",
-      "#1F2020"
+      "#EAE4D6", //background
+      "#CEC3B6", //neutral
+      "#1F2020", //text
+      "#F1F4EF", //text dark
+      "#7FAACB", //primary
+      "#4E8098", //secondary
+      "#D0C4E2", //accent
+      "#0CA789", //secondary accent
+      "#2A9DA1", //constrast
+      "#FAC710" //secondary contrast
     ]
   })
   .addTemplates({
