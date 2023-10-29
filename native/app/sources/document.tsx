@@ -9,11 +9,17 @@ import { Button, Text, View } from "tamagui";
 import { llamaInputState } from "../../utils/atoms";
 import { realtimeLlamaInference } from "../../utils/llama";
 
+import { useColorScheme } from "react-native";
+import { getTheme } from "../../utils/themes";
+
 export default function DocumentScanPage() {
   const router = useRouter();
   const device = useCameraDevice("back");
   const camera = useRef<Camera>(null);
   const setLlamaInput = useSetRecoilState(llamaInputState);
+
+  const colorScheme = useColorScheme();
+  const theme = getTheme(colorScheme);
 
   if (device == null) return <Text>Camera not available</Text>;
   return (
@@ -41,6 +47,10 @@ export default function DocumentScanPage() {
         left="$4"
         icon={ArrowLeft}
         onPress={router.back}
+        backgroundColor={theme.colors.contrast}
+        color={theme.colors.background}
+        pressStyle={{ backgroundColor: theme.colors.primary }}
+        hoverStyle={{ backgroundColor: theme.colors.primary }}
       />
       <Button
         position="absolute"
@@ -57,6 +67,11 @@ export default function DocumentScanPage() {
           realtimeLlamaInference();
           router.back();
         }}
+
+        backgroundColor={theme.colors.contrast}
+        color={theme.colors.background}
+        pressStyle={{ backgroundColor: theme.colors.primary }}
+        hoverStyle={{ backgroundColor: theme.colors.primary }}
       >
         Take Photo
       </Button>

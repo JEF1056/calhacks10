@@ -177,20 +177,20 @@ export default function AudioPlayer() {
         separator={
           <Separator
             vertical
-            borderColor={theme.colors.secondary}
+            borderColor={theme.colors.primary}
           />
         }
-        borderWidth={1}
-        borderColor={theme.colors.secondary}
-        backgroundColor={theme.colors.primary}
+        borderWidth={1} //play button
+        borderColor={theme.colors.primary}
+        backgroundColor={theme.colors.contrast}
         orientation="horizontal"
       >
         <Group.Item>
-          <Button
-            backgroundColor={theme.colors.primary}
+          <Button //regenerate button
+            backgroundColor={theme.colors.constrast}
             color={theme.colors.text}
-            pressStyle={{ backgroundColor: theme.colors.secondary }}
-            hoverStyle={{ backgroundColor: theme.colors.secondary }}
+            pressStyle={{ backgroundColor: theme.colors.primary }}
+            hoverStyle={{ backgroundColor: theme.colors.primary }}
             disabled={playerDisabled}
             opacity={playerDisabled ? 0.5 : 1}
             flexGrow={1}
@@ -210,11 +210,11 @@ export default function AudioPlayer() {
           </Button>
         </Group.Item>
         <Group.Item>
-          <Button
-            backgroundColor={theme.colors.primary}
+          <Button //seek to 0 button (return to 0)
+            backgroundColor={theme.colors.contrast}
             color={theme.colors.text}
-            pressStyle={{ backgroundColor: theme.colors.secondary }}
-            hoverStyle={{ backgroundColor: theme.colors.secondary }}
+            pressStyle={{ backgroundColor: theme.colors.primary }}
+            hoverStyle={{ backgroundColor: theme.colors.primary }}
             icon={Rewind}
             onPress={async () => {
               await TrackPlayer.pause();

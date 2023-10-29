@@ -39,7 +39,7 @@ export default function WhisperTranscript() {
                 backgroundColor={
                   playerProgress.position * 100 >= segment.t0 &&
                   playerProgress.position * 100 < segment.t1
-                    ? theme.pallete.green[700]
+                    ? theme.colors.secondaryAccent
                     : undefined
                 }
               >

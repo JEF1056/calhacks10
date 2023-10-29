@@ -313,12 +313,12 @@ const themesBuilder = createThemeBuilder()
       "#CEC3B6", //neutral
       "#1F2020", //text
       "#F1F4EF", //text dark
-      "#7FAACB", //primary
-      "#4E8098", //secondary
-      "#D0C4E2", //accent
-      "#0CA789", //secondary accent
-      "#2A9DA1", //constrast
-      "#FAC710" //secondary contrast
+      "#517EA0", //primary
+      "#558A6B", //secondary
+      "#C3B5A5", //accent
+      "#C5D5E2", //secondary accent (text highlighting)
+      "#789EBB", //constrast (diff primary)
+      "#65A17E" //secondary contrast (diff secondary)
     ]
   })
   .addTemplates({

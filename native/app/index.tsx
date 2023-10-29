@@ -176,6 +176,10 @@ export default function Home() {
             onPress={() => {
               setBottomSheetContent("transcribe");
             }}
+            backgroundColor={theme.colors.contrast}
+            color={theme.colors.background}
+            pressStyle={{ backgroundColor: theme.colors.primary }}
+            hoverStyle={{ backgroundColor: theme.colors.primary }}
           >
             Continue
           </Button>

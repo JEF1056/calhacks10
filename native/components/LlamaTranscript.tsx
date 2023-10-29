@@ -70,7 +70,7 @@ export default function LlamaTranscript() {
       </Text>
       <Separator
         marginVertical={15}
-        borderColor={theme.pallete.gray[300]}
+        borderColor={theme.colors.accent}
         borderWidth={1}
         width="100%"
         borderRadius={"$10"}

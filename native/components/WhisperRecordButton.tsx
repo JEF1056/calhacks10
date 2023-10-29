@@ -159,8 +159,8 @@ export default function WhisperRecordButton() {
         onPress={recordButtonInternalProps.callbackfn}
         backgroundColor={theme.colors.contrast}
         color={theme.colors.background}
-        pressStyle={{ backgroundColor: theme.colors.secondaryContrast }}
-        hoverStyle={{ backgroundColor: theme.colors.secondaryContrast }}
+        pressStyle={{ backgroundColor: theme.colors.primary }}
+        hoverStyle={{ backgroundColor: theme.colors.primary }}
       >
         {recordButtonInternalProps.buttonLabel}
       </Button>
