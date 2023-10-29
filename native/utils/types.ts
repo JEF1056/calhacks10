@@ -46,3 +46,29 @@ export type ToastInformation = {
   title: string;
   description?: string;
 };
+
+// Patient information
+export type PatientInformation = {
+  id: string;
+  name: string;
+  summary: string;
+  picturePath: string;
+  ingested: (AudioRecording | DocumentPicture)[];
+  dataHash: string;
+};
+
+export type AudioRecording = {
+  id: number;
+  patientId: number;
+  audioPath: string;
+  transcript: string;
+  createdAt: Date;
+};
+
+export type DocumentPicture = {
+  id: number;
+  patientId: number;
+  picturePath: string;
+  transcript: string;
+  createdAt: Date;
+};

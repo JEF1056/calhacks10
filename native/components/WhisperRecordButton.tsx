@@ -152,18 +152,17 @@ export default function WhisperRecordButton() {
   }, [whisperTranscript]);
 
   return (
-    <YGroup.Item>
-      <Button
-        disabled={recordButtonInternalProps.buttonDisabled}
-        opacity={recordButtonInternalProps.buttonDisabled ? 0.5 : 1}
-        onPress={recordButtonInternalProps.callbackfn}
-        backgroundColor={theme.colors.contrast}
-        color={theme.colors.background}
-        pressStyle={{ backgroundColor: theme.colors.primary }}
-        hoverStyle={{ backgroundColor: theme.colors.primary }}
-      >
-        {recordButtonInternalProps.buttonLabel}
-      </Button>
-    </YGroup.Item>
+    <Button
+      height="$6"
+      borderRadius={"$10"}
+      backgroundColor={theme.colors.primary}
+      disabled={recordButtonInternalProps.buttonDisabled}
+      opacity={recordButtonInternalProps.buttonDisabled ? 0.5 : 1}
+      onPress={recordButtonInternalProps.callbackfn}
+      pressStyle={{ backgroundColor: theme.colors.contrast }}
+      hoverStyle={{ backgroundColor: theme.colors.contrast }}
+    >
+      {recordButtonInternalProps.buttonLabel}
+    </Button>
   );
 }

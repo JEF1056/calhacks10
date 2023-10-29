@@ -1,30 +1,26 @@
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import {
-  ArrowUpSquare,
-  TextQuote,
-  WrapText,
-  Wrench
-} from "@tamagui/lucide-icons";
+import { TextQuote, WrapText } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
 import { router } from "expo-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   Button,
-  Group,
+  H3,
+  Image,
+  ScrollView,
   Separator,
   Text,
-  TextArea,
-  YGroup,
+  XStack,
   YStack
 } from "tamagui";
+import { v4 as uuid } from "uuid";
 
 import AudioPlayer from "../components/AudioPlayer";
-import { BaseStack } from "../components/BaseStack";
 import { BottomSheetComponent } from "../components/BottomSheet";
-import DocumentScanButton from "../components/DocumentScanButton";
 import LlamaTranscript from "../components/LlamaTranscript";
 import { LoadingScreen } from "../components/LoadingScreen";
+import PatientRow from "../components/PatientRow";
 import { ToastComponent } from "../components/Toast";
 import WhisperRecordButton from "../components/WhisperRecordButton";
 import WhisperTranscript from "../components/WhisperTranscript";
@@ -34,9 +30,9 @@ import {
   expectedDataBytesState,
   llamaContextState,
   llamaInputState,
-  llamaOutputState,
   modelsErrorsState,
   modelsLoadedState,
+  patientInformationState,
   receivedDataBytesState,
   themeState,
   whisperTranscriptState
@@ -44,6 +40,7 @@ import {
 import { initializeLlama, realtimeLlamaInference } from "../utils/llama";
 import { getTheme } from "../utils/themes";
 import { initializeTrackPlayer } from "../utils/trackplayer";
+import { PatientInformation } from "../utils/types";
 import {
   initializeWhisper,
   mapWhisperTranscriptToProcessingState,
@@ -52,16 +49,14 @@ import {
 
 export default function Home() {
   const llamaContext = useRecoilValue(llamaContextState);
-  const [llamaInput, setLlamaInput] = useRecoilState(llamaInputState);
-  const llamaOutput = useRecoilValue(llamaOutputState);
-  const [llamaEditorVisible, setLlamaEditorVisible] = useState(false);
-  const [addExtraTopPadding, setAddExtraTopPadding] = useState(false);
+  const setLlamaInput = useSetRecoilState(llamaInputState);
 
   const [modelsLoaded, setModelsLoaded] = useRecoilState(modelsLoadedState);
   const setModelsError = useSetRecoilState(modelsErrorsState);
   const setExpectedDataBytes = useSetRecoilState(expectedDataBytesState);
   const setReceivedDataBytes = useSetRecoilState(receivedDataBytesState);
   const whisperTranscript = useRecoilValue(whisperTranscriptState);
+  const bottomsheetOpen = useRecoilValue(bottomSheetOpenState);
 
   const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
     bottomSheetContentState
@@ -75,6 +70,7 @@ export default function Home() {
   }, [colorScheme, setTheme]);
 
   const currentToast = useToastController();
+  const [patientList, setPatientList] = useRecoilState(patientInformationState);
 
   const showAsSummarizing = () => {
     currentToast.show("Summarizing", {
@@ -161,9 +157,21 @@ export default function Home() {
     init();
   }, [setModelsLoaded]);
 
-  //   const expectedDataBytes = useRecoilValue(expectedDataBytesState);
-  //   const receivedDataBytes = useRecoilValue(receivedDataBytesState);
-  //   console.log(receivedDataBytes, expectedDataBytes);
+  //   // TODO: remove this debugging function
+  //   useEffect(() => {
+  //     console.log(patientList);
+  //     setPatientList((p) => [
+  //       ...p,
+  //       {
+  //         id: uuid.v4(),
+  //         name: "Hi! I'm bob",
+  //         summary: "bruh momenttt",
+  //         picturePath: "https://placekitten.com/200/300",
+  //         ingested: [],
+  //         dataHash: "string"
+  //       }
+  //     ]);
+  //   }, []);
 
   let bottomSheetInternals: JSX.Element = <></>;
 
@@ -216,101 +224,72 @@ export default function Home() {
   return !modelsLoaded ? (
     <LoadingScreen />
   ) : (
-    <BaseStack>
+    <YStack
+      backgroundColor={theme.colors.background}
+      height={"100%"}
+    >
       <ToastComponent />
-      <YStack
-        space="$5"
-        flexGrow={1}
-        paddingTop={addExtraTopPadding && "$10"}
-      >
-        <YStack
-          space="$5"
-          flexGrow={1}
-        >
-          <BottomSheetComponent
-            internalComponent={bottomSheetInternals}
-            onCloseStopFunction={() => {
-              stopWhisperRealtimeTranscription();
-            }}
-          />
-        </YStack>
+      <BottomSheetComponent
+        internalComponent={bottomSheetInternals}
+        onCloseStopFunction={() => {
+          stopWhisperRealtimeTranscription();
+          llamaContext.stopCompletion();
+        }}
+      />
 
-        <YStack
-          space="$5"
-          flexGrow={1}
-        >
-          {llamaEditorVisible && (
-            <TextArea
-              value={llamaInput}
-              onChange={(event) => {
-                setLlamaInput(event.nativeEvent.text);
-              }}
-              height="$10"
-            />
-          )}
-        </YStack>
-      </YStack>
+      {/* Header */}
       <YStack
-        justifyContent="flex-end"
-        space="$4"
+        backgroundColor={theme.colors.accent}
+        paddingHorizontal="$4"
+        height="$8"
+        justifyContent="center"
+        alignContent="center"
+        borderBottomLeftRadius={"$4"}
+        borderBottomRightRadius={"$4"}
       >
-        <YGroup
-          bordered
-          separator={<Separator borderColor={theme.colors.background} />}
-          backgroundColor={theme.colors.background}
+        <XStack
+          justifyContent="flex-start"
+          alignItems="center"
+          flexShrink={1}
+          onLongPress={() => {
+            router.push("/tools/dev");
+          }}
+          gap="$2"
         >
-          <YGroup.Item>
-            <Group
-              separator={
-                <Separator
-                  vertical
-                  borderColor={theme.colors.background}
-                />
-              }
-              borderWidth={1}
-              borderColor={theme.colors.secondary}
-              backgroundColor={theme.colors.contrast}
-              orientation="horizontal"
-            >
-              <Group.Item>
-                <Button
-                  onPress={() => {
-                    router.push("/tools/dev");
-                  }}
-                  backgroundColor={theme.colors.secondaryContrast}
-                  pressStyle={{ backgroundColor: theme.colors.contrast }}
-                  hoverStyle={{ backgroundColor: theme.colors.contrast }}
-                  color={theme.colors.background}
-                  icon={Wrench}
-                  flexGrow={1}
-                >
-                  Debug tools
-                </Button>
-              </Group.Item>
-              <Group.Item>
-                <Button
-                  onPress={() => {
-                    setAddExtraTopPadding(!addExtraTopPadding);
-                  }}
-                  backgroundColor={theme.colors.secondaryContrast}
-                  pressStyle={{ backgroundColor: theme.colors.contrast }}
-                  hoverStyle={{ backgroundColor: theme.colors.contrast }}
-                  color={theme.colors.background}
-                  icon={ArrowUpSquare}
-                >
-                  {addExtraTopPadding ? "Un-pad top" : "Pad Top :3"}
-                </Button>
-              </Group.Item>
-            </Group>
-          </YGroup.Item>
-          <YGroup.Item>
-            <DocumentScanButton />
-          </YGroup.Item>
-          <YGroup.Item>
-            <WhisperRecordButton />
-          </YGroup.Item>
-        </YGroup>
+          <Image
+            source={require("../../native/assets/icon.png")}
+            height={"$5"}
+            width={"$5"}
+          />
+          <H3>MediScript</H3>
+        </XStack>
       </YStack>
-    </BaseStack>
+
+      {/* Content */}
+      <ScrollView flexGrow={1}>
+        {patientList.map((patient) => (
+          <>
+            <PatientRow
+              key={patient.id}
+              patientId={patient.id}
+            />
+            <Separator />
+          </>
+        ))}
+      </ScrollView>
+
+      {/* Footer */}
+      <YStack
+        backgroundColor={theme.colors.accent}
+        paddingHorizontal="$4"
+        height="$8"
+        justifyContent="center"
+        alignContent="center"
+        borderTopLeftRadius={"$4"}
+        borderTopRightRadius={"$4"}
+      >
+        <WhisperRecordButton />
+      </YStack>
+    </YStack>
   );
 }

@@ -1,5 +1,6 @@
 import RNFS from "react-native-fs";
 import { initLlama } from "llama.rn/src";
+import { NativeCompletionResult } from "llama.rn/src/NativeRNLlama";
 import { getRecoil, setRecoil } from "recoil-nexus";
 
 import {
@@ -10,6 +11,25 @@ import {
 } from "./atoms";
 import { llamaModelFile, modelUrl } from "./constants";
 import { downloadFile } from "./filesystem";
+import { LlamaResponse } from "./types";
+
+const params = {
+  prompt: "",
+  temperature: 0.2,
+  repeat_last_n: 0, // 0 = disable penalty, -1 = context size
+  repeat_penalty: 1.2, // 1.0 = disabled
+  top_k: 5000, // <= 0 to use vocab size
+  top_p: 0.8, // 1.0 = disabled
+  tfs_z: 1.0, // 1.0 = disabled
+  typical_p: 1.0, // 1.0 = `disabled
+  presence_penalty: 0.0, // 0.0 = disabled
+  frequency_penalty: 0.0, // 0.0 = disabled
+  //   mirostat: 0, // 0/1/2
+  //   mirostat_tau: 5, // target entropy
+  //   mirostat_eta: 0.1, // learning rate
+  //   n_probs: 0, // Show probabilities
+  stop: ["\n\n"]
+};
 
 export async function initializeLlama() {
   const llamaModelBaseDir = `${RNFS.DocumentDirectoryPath}/models/llama`;
@@ -81,6 +101,31 @@ export async function resetLlama() {
   );
 }
 
+export async function runLlamaInference(
+  llamaInput: string,
+  generateTopic?: boolean
+): Promise<LlamaResponse> {
+  const llamaContext = getRecoil(llamaContextState);
+
+  const summary = await llamaContext.completion({
+    ...params,
+    prompt: `Summarize the following text: ${llamaInput}\n\nSummary:`
+  });
+
+  let topic: NativeCompletionResult;
+  if (generateTopic) {
+    topic = await llamaContext.completion({
+      ...params,
+      prompt: `Give me the topic of the following text: ${llamaInput}\n\nTopic:`
+    });
+  }
+
+  return {
+    topic: topic.text,
+    summary: summary.text
+  };
+}
+
 export async function realtimeLlamaInference() {
   const llamaContext = getRecoil(llamaContextState);
   const llamaInput = getRecoil(llamaInputState);
@@ -91,24 +136,6 @@ export async function realtimeLlamaInference() {
     summary: "",
     isProcessing: true
   });
-
-  const params = {
-    prompt: "",
-    temperature: 0.2,
-    repeat_last_n: 0, // 0 = disable penalty, -1 = context size
-    repeat_penalty: 1.2, // 1.0 = disabled
-    top_k: 5000, // <= 0 to use vocab size
-    top_p: 0.8, // 1.0 = disabled
-    tfs_z: 1.0, // 1.0 = disabled
-    typical_p: 1.0, // 1.0 = `disabled
-    presence_penalty: 0.0, // 0.0 = disabled
-    frequency_penalty: 0.0, // 0.0 = disabled
-    //   mirostat: 0, // 0/1/2
-    //   mirostat_tau: 5, // target entropy
-    //   mirostat_eta: 0.1, // learning rate
-    //   n_probs: 0, // Show probabilities
-    stop: ["\n\n"]
-  };
 
   const enable_topic_generation = true;
   const experimental_topic_mix = false;

@@ -4,6 +4,7 @@ import { WhisperContext } from "whisper.rn/src";
 
 import {
   LlamaResponse,
+  PatientInformation,
   WhisperController,
   WhisperTranscriptionStatus
 } from "./types";
@@ -85,4 +86,15 @@ export const bottomSheetContentState = atom<
 >({
   key: "bottomSheetContentState",
   default: "options"
+});
+
+// ---------------------------------------------------------------- Patient information
+export const patientInformationState = atom<PatientInformation[]>({
+  key: "patientInformationState",
+  default: []
+});
+
+export const currentSelectedPatient = atom<PatientInformation | undefined>({
+  key: "currentSelectedPatient",
+  default: undefined
 });

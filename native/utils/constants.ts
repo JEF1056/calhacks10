@@ -52,3 +52,5 @@ export const whisperRealtimeTranscribeOptions = {
   },
   audioSessionOnStopIos: "restore"
 };
+
+export const patientInfoKey = "patientInformation";

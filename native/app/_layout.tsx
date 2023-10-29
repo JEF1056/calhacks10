@@ -11,6 +11,7 @@ import RecoilNexus from "recoil-nexus";
 import { TamaguiProvider, Text, Theme } from "tamagui";
 
 import config from "../tamagui.config";
+import PatientInformationProvider from "../utils/patientInformationService";
 import { getTheme } from "../utils/themes";
 
 SplashScreen.preventAutoHideAsync();
@@ -19,7 +20,7 @@ export default function Layout() {
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
 
-  SystemUI.setBackgroundColorAsync(theme.colors.background);
+  SystemUI.setBackgroundColorAsync(theme.colors.accent);
 
   const [loaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -45,16 +46,17 @@ export default function Layout() {
           swipeThreshold={100}
         >
           <RecoilNexus />
+          <PatientInformationProvider />
           <StatusBar
             style={theme.dark ? "light" : "dark"}
-            backgroundColor={theme.colors.background}
+            backgroundColor={theme.colors.accent}
           />
           <Suspense fallback={<Text>Loading...</Text>}>
             <Theme name={colorScheme}>
               <SafeAreaView
                 style={{
                   flex: 1,
-                  backgroundColor: theme.colors.background
+                  backgroundColor: theme.colors.accent
                 }}
               >
                 <ToastViewport
@@ -67,7 +69,7 @@ export default function Layout() {
                   screenOptions={{
                     headerShown: false,
                     contentStyle: {
-                      backgroundColor: theme.colors.background
+                      backgroundColor: theme.colors.accent
                     }
                   }}
                 />

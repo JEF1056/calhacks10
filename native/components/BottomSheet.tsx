@@ -100,7 +100,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
         {position.current < snapPoints.length - 3 &&
           "Slide Down To View Profile"}
         {position.current == snapPoints.length - 3 &&
-          "Continue Sliding To Cancel"}
+          "Continue Sliding Down To Cancel"}
         {position.current == snapPoints.length - 2 && "Slide Up To Resume"}
       </Text>
       <Sheet.Handle

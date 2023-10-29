@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
+import EncryptedStorage from "react-native-encrypted-storage";
 import RNFS from "react-native-fs";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
@@ -29,6 +30,7 @@ import {
   whisperTranscriptState
 } from "../../utils/atoms";
 import {
+  patientInfoKey,
   recordingsDir,
   whisperCoreMlModelBaseDir,
   whisperModelBaseDir
@@ -59,6 +61,7 @@ export default function Dev() {
   const [deviceInfo, setDeviceInfo] = useState<DeviceInformation | undefined>();
   const [modelFilesMap, setModelFilesMap] = useState<string>("");
   const [rerender, setRerender] = useState<boolean>(false);
+  const [encryptedStorageData, setEncryptedStorageData] = useState<string>("");
 
   const whisperContext = useRecoilValue(whisperContextState);
   const whisperController = useRecoilValue(whisperControllerState);
@@ -77,6 +80,8 @@ export default function Dev() {
       });
 
       setModelFilesMap(await listFiles(`${RNFS.DocumentDirectoryPath}`));
+
+      setEncryptedStorageData(await EncryptedStorage.getItem(patientInfoKey));
     }
 
     getDeviceInfo();
@@ -149,9 +154,19 @@ export default function Dev() {
               <Paragraph>OS: {deviceInfo.os}</Paragraph>
               <Paragraph>Platform: {Platform.OS}</Paragraph>
               <Paragraph>
-                Headphones connected:{" "}
-                {deviceInfo.headphonesConnected.toString()}
+                {"Headphones connected: " +
+                  deviceInfo.headphonesConnected.toString()}
               </Paragraph>
+
+              <Button onPress={() => EncryptedStorage.clear()}>
+                Clear encrypted storage
+              </Button>
+
+              <ScrollView>
+                <Paragraph>
+                  {"EncryptedStorage: " + encryptedStorageData}
+                </Paragraph>
+              </ScrollView>
             </YStack>
           )}
         </TabsContent>
