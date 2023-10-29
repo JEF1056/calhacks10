@@ -22,10 +22,11 @@ export default function Layout() {
   SystemUI.setBackgroundColorAsync(theme.colors.background);
 
   const [loaded] = useFonts({
-    //Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    Fredoka: require("../../native/assets/Fredoka/Fredoka-VariableFont_wdth,wght.ttf"),
-    FredokaSemiBold: require("../../native/assets/Fredoka/static/Fredoka-SemiBold.ttf"),
-    RobotoMono: require("../../native/assets/Roboto_Mono/RobotoMono-VariableFont_wght.ttf")
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    //Fredoka: require("../../native/assets/Fredoka/Fredoka-VariableFont_wdth,wght.ttf"),
+    //FredokaSemiBold: require("../../native/assets/Fredoka/static/Fredoka-SemiBold.ttf"),
+    //RobotoMono: require("../../native/assets/Roboto_Mono/RobotoMono-VariableFont_wght.ttf")
   });
 
   useEffect(() => {
