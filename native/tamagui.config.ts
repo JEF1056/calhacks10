@@ -4,6 +4,8 @@ import { createMedia } from "@tamagui/react-native-media-driver";
 import { shorthands } from "@tamagui/shorthands";
 import { themes, tokens } from "@tamagui/themes";
 import { createTamagui } from "tamagui";
+import { createFont, createTokens } from 'tamagui';
+
 
 const animations = createAnimations({
   bouncy: {
@@ -28,6 +30,7 @@ const animations = createAnimations({
     duration: 300
   }
 });
+
 
 const headingFont = createInterFont();
 const bodyFont = createInterFont();
