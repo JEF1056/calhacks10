@@ -12669,9 +12669,9 @@ which@^2.0.1, which@^2.0.2:
   dependencies:
     isexe "^2.0.0"
 
-"whisper.rn@https://github.com/JEF1056/whisper.rn.git":
-  version "0.4.0-rc.3"
-  resolved "https://github.com/JEF1056/whisper.rn.git#d45e23512250731cd18cdbcd0b947f7552f1874f"
+"whisper.rn@git+https://github.com/JEF1056/whisper.rn.git#309e1f24efad0bc33b11eb7952aff72f381abe17":
+  version "0.3.9"
+  resolved "git+https://github.com/JEF1056/whisper.rn.git#309e1f24efad0bc33b11eb7952aff72f381abe17"
 
 wide-align@^1.1.5:
   version "1.1.5"

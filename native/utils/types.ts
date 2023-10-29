@@ -1,3 +1,4 @@
+import moment from "moment";
 import { TranscribeRealtimeEvent, TranscribeResult } from "whisper.rn/src";
 
 // ---------------------------------------------------------------- Whisper
@@ -54,6 +55,7 @@ export type PatientInformation = {
   summary: string;
   picturePath: string;
   ingested: (AudioRecording | DocumentPicture)[];
+  lastSeen: moment.Moment;
   dataHash: string;
 };
 

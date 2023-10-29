@@ -94,7 +94,9 @@ export const patientInformationState = atom<PatientInformation[]>({
   default: []
 });
 
-export const currentSelectedPatient = atom<PatientInformation | undefined>({
-  key: "currentSelectedPatient",
-  default: undefined
-});
+export const currentSelectedPatientState = atom<PatientInformation | undefined>(
+  {
+    key: "currentSelectedPatientState",
+    default: undefined
+  }
+);

@@ -59,6 +59,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
     });
     resetBottomSheetContent();
     setOpen(false);
+    currentToast.hide();
   }
 
   return (

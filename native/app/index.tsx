@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-import { TextQuote, WrapText } from "@tamagui/lucide-icons";
+import { Camera, TextQuote, WrapText } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
 import { router } from "expo-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -10,12 +10,16 @@ import {
   Image,
   ScrollView,
   Separator,
+  Sheet,
   Text,
+  XGroup,
   XStack,
+  YGroup,
   YStack
 } from "tamagui";
 import { v4 as uuid } from "uuid";
 
+import AddPatientInfo from "../components/AddPatientInfo";
 import AudioPlayer from "../components/AudioPlayer";
 import { BottomSheetComponent } from "../components/BottomSheet";
 import LlamaTranscript from "../components/LlamaTranscript";
@@ -27,6 +31,7 @@ import WhisperTranscript from "../components/WhisperTranscript";
 import {
   bottomSheetContentState,
   bottomSheetOpenState,
+  currentSelectedPatientState,
   expectedDataBytesState,
   llamaContextState,
   llamaInputState,
@@ -38,9 +43,9 @@ import {
   whisperTranscriptState
 } from "../utils/atoms";
 import { initializeLlama, realtimeLlamaInference } from "../utils/llama";
+import { mockData } from "../utils/mocks";
 import { getTheme } from "../utils/themes";
 import { initializeTrackPlayer } from "../utils/trackplayer";
-import { PatientInformation } from "../utils/types";
 import {
   initializeWhisper,
   mapWhisperTranscriptToProcessingState,
@@ -56,7 +61,10 @@ export default function Home() {
   const setExpectedDataBytes = useSetRecoilState(expectedDataBytesState);
   const setReceivedDataBytes = useSetRecoilState(receivedDataBytesState);
   const whisperTranscript = useRecoilValue(whisperTranscriptState);
-  const bottomsheetOpen = useRecoilValue(bottomSheetOpenState);
+  const [currentSelectedPatient, setCurrentSelectedPatient] = useRecoilState(
+    currentSelectedPatientState
+  );
+  const setPatientInformation = useSetRecoilState(patientInformationState);
 
   const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
     bottomSheetContentState
@@ -157,21 +165,9 @@ export default function Home() {
     init();
   }, [setModelsLoaded]);
 
-  //   // TODO: remove this debugging function
-  //   useEffect(() => {
-  //     console.log(patientList);
-  //     setPatientList((p) => [
-  //       ...p,
-  //       {
-  //         id: uuid.v4(),
-  //         name: "Hi! I'm bob",
-  //         summary: "bruh momenttt",
-  //         picturePath: "https://placekitten.com/200/300",
-  //         ingested: [],
-  //         dataHash: "string"
-  //       }
-  //     ]);
-  //   }, []);
+  useEffect(() => {
+    setPatientInformation(mockData);
+  }, [modelsLoaded]);
 
   let bottomSheetInternals: JSX.Element = <></>;
 
@@ -179,18 +175,50 @@ export default function Home() {
     case "options":
       bottomSheetInternals = (
         <>
-          <Text>This is a placeholder for options</Text>
-          <Button
-            onPress={() => {
-              setBottomSheetContent("transcribe");
-            }}
-            backgroundColor={theme.colors.contrast}
-            color={theme.colors.background}
-            pressStyle={{ backgroundColor: theme.colors.primary }}
-            hoverStyle={{ backgroundColor: theme.colors.primary }}
+          <Sheet.ScrollView
+            width="100%"
+            flexGrow={1}
           >
-            Continue
-          </Button>
+            <YGroup>
+              {patientList.map((patient) => (
+                <Button
+                  backgroundColor={
+                    currentSelectedPatient &&
+                    currentSelectedPatient.id == patient.id &&
+                    theme.colors.secondary
+                  }
+                  key={patient.id}
+                  onPress={() => {
+                    setCurrentSelectedPatient(patient);
+                    router.push(`/pages/PatientDetail`);
+                  }}
+                >
+                  {patient.name}
+                </Button>
+              ))}
+            </YGroup>
+          </Sheet.ScrollView>
+
+          <Separator
+            borderColor={theme.colors.neutral}
+            marginVertical="$4"
+          />
+
+          <XGroup
+            paddingBottom="$2"
+            gap="$2"
+          >
+            <WhisperRecordButton />
+
+            <Button
+              size={"$6"}
+              onPress={() => {
+                setBottomSheetContent("photo");
+              }}
+            >
+              <Camera size="$2" />
+            </Button>
+          </XGroup>
         </>
       );
       break;
@@ -252,7 +280,7 @@ export default function Home() {
           alignItems="center"
           flexShrink={1}
           onLongPress={() => {
-            router.push("/tools/dev");
+            router.push("/pages/Developer");
           }}
           gap="$2"
         >
@@ -288,7 +316,7 @@ export default function Home() {
         borderTopLeftRadius={"$4"}
         borderTopRightRadius={"$4"}
       >
-        <WhisperRecordButton />
+        <AddPatientInfo />
       </YStack>
     </YStack>
   );

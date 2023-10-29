@@ -54,3 +54,12 @@ export const whisperRealtimeTranscribeOptions = {
 };
 
 export const patientInfoKey = "patientInformation";
+
+// TODO: these are mock images.
+export const mockImagesMap = {
+  Anh: require("../../native/assets/MockImages/Anh.png"),
+  Boba: require("../../native/assets/MockImages/Boba.jpg"),
+  Chonkers: require("../../native/assets/MockImages/Chonkers.jpg"),
+  Lem: require("../../native/assets/MockImages/Lem.jpeg"),
+  Mochi: require("../../native/assets/MockImages/Mochi.jpg")
+};

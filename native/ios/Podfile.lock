@@ -679,7 +679,7 @@ PODS:
     - React-callinvoker
     - React-Core
     - react-native-worklets-core
-  - whisper-rn (0.4.0-rc.3):
+  - whisper-rn (0.3.9):
     - React-Core
   - Yoga (1.14.0)
 
@@ -1034,7 +1034,7 @@ SPEC CHECKSUMS:
   SPIndicator: 93e0a4fb23de51294ac48e874c0f081a5e293e4f
   SwiftAudioEx: a6ef015f89f49d2ec1c352dc440805375029d5a7
   VisionCamera: cb27c70cea1439e9a946bf2acdc059f8fb1bc68c
-  whisper-rn: 5a30606992e652c9cd4192223a95df200f5acc12
+  whisper-rn: 0fe4431970b70ee91108add706cd47d2b38e588e
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
 
 PODFILE CHECKSUM: a692b3c8f8fa854d53feb2334000491aea894089

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { Check, Loader, Mic } from "@tamagui/lucide-icons";
+import { Check, Loader, Mic, Speech } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Button, YGroup } from "tamagui";
+import { Button } from "tamagui";
 
 import {
   bottomSheetContentState,
@@ -26,6 +26,15 @@ type RecordButtonInternalProps = {
 export default function WhisperRecordButton() {
   const colorScheme = useColorScheme();
   const whisperTranscript = useRecoilValue(whisperTranscriptState);
+
+  const currentToast = useToastController();
+  const [bottomSheetOpen, setBottomSheetOpen] =
+    useRecoilState(bottomSheetOpenState);
+  const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
+    bottomSheetContentState
+  );
+
+  const theme = getTheme(colorScheme);
   const [recordButtonInternalProps, setRecordButtonInternalProps] =
     useState<RecordButtonInternalProps>({
       buttonLabel: "Start recording",
@@ -51,14 +60,6 @@ export default function WhisperRecordButton() {
         });
       }
     });
-  const currentToast = useToastController();
-  const [bottomSheetOpen, setBottomSheetOpen] =
-    useRecoilState(bottomSheetOpenState);
-  const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
-    bottomSheetContentState
-  );
-
-  const theme = getTheme(colorScheme);
 
   useEffect(() => {
     const whisperProcessingState =
@@ -124,7 +125,7 @@ export default function WhisperRecordButton() {
             startWhisperRealtimeTranscription();
             setBottomSheetOpen(true);
             currentToast.show("Recording", {
-              message: "slide to stop",
+              message: "Slide To Stop",
               leftIcon: <Mic />,
               backgroundColor: theme.pallete.amber[500],
               onDismiss: () => {
@@ -153,16 +154,16 @@ export default function WhisperRecordButton() {
 
   return (
     <Button
-      height="$6"
-      borderRadius={"$10"}
+      size={"$6"}
       backgroundColor={theme.colors.primary}
-      disabled={recordButtonInternalProps.buttonDisabled}
-      opacity={recordButtonInternalProps.buttonDisabled ? 0.5 : 1}
-      onPress={recordButtonInternalProps.callbackfn}
+      onPress={() => {
+        recordButtonInternalProps.callbackfn();
+        setBottomSheetContent("transcribe");
+      }}
       pressStyle={{ backgroundColor: theme.colors.contrast }}
       hoverStyle={{ backgroundColor: theme.colors.contrast }}
     >
-      {recordButtonInternalProps.buttonLabel}
+      <Speech />
     </Button>
   );
 }
