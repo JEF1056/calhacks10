@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useColorScheme } from "react-native";
 import useKeyboard from "@rnhooks/keyboard";
 import { ArrowDown } from "@tamagui/lucide-icons";
+import { useToastController } from "@tamagui/toast";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { H3, Sheet, Text } from "tamagui";
+import { H3, Sheet, Text, YStack } from "tamagui";
 
 import { bottomSheetContentState, bottomSheetOpenState } from "../utils/atoms";
 import { getTheme } from "../utils/themes";
@@ -17,12 +18,13 @@ type BottomSheetProps = {
 export function BottomSheetComponent(props: BottomSheetProps) {
   const [open, setOpen] = useRecoilState(bottomSheetOpenState);
   const resetBottomSheetContent = useResetRecoilState(bottomSheetContentState);
-  const snapPoints = [85, 30, 20, 0];
+  const snapPoints = [85, 35, 25, 0];
   const keyboardVisible = useKeyboard()[0];
   const [position, setPosition] = useState({
     current: 0,
     last: 0
   });
+  const currentToast = useToastController();
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
@@ -118,10 +120,14 @@ export function BottomSheetComponent(props: BottomSheetProps) {
         alignItems="center"
       >
         {position.current == snapPoints.length - 2 ? (
-          <>
+          <YStack
+            space="$3"
+            alignItems="center"
+          >
             <H3>{"Pull down to cancel"}</H3>
+            <Text opacity={0.5}>Your progress is saved</Text>
             <ArrowDown />
-          </>
+          </YStack>
         ) : (
           props.internalComponent
         )}

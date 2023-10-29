@@ -1,7 +1,5 @@
 import { TranscribeRealtimeEvent, TranscribeResult } from "whisper.rn/src";
 
-import { neutral } from "./colors";
-
 // ---------------------------------------------------------------- Whisper
 export type WhisperProcessingStatus =
   | "idle"
@@ -42,9 +40,6 @@ export type DeviceInformation = {
   os: string;
   headphonesConnected: boolean;
 };
-
-// ---------------------------------------------------------------- Colors
-export type colorGroup = typeof neutral;
 
 // ---------------------------------------------------------------- Toasts
 export type ToastInformation = {

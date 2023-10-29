@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import {
   ArrowUpSquare,
-  Bug,
-  ClipboardSignature,
+  TextQuote,
+  WrapText,
   Wrench
 } from "@tamagui/lucide-icons";
+import { useToastController } from "@tamagui/toast";
 import { router } from "expo-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   Button,
   Group,
-  ScrollView,
   Separator,
   Text,
   TextArea,
@@ -23,12 +23,14 @@ import AudioPlayer from "../components/AudioPlayer";
 import { BaseStack } from "../components/BaseStack";
 import { BottomSheetComponent } from "../components/BottomSheet";
 import DocumentScanButton from "../components/DocumentScanButton";
+import LlamaTranscript from "../components/LlamaTranscript";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { ToastComponent } from "../components/Toast";
 import WhisperRecordButton from "../components/WhisperRecordButton";
 import WhisperTranscript from "../components/WhisperTranscript";
 import {
   bottomSheetContentState,
+  bottomSheetOpenState,
   expectedDataBytesState,
   llamaContextState,
   llamaInputState,
@@ -39,11 +41,7 @@ import {
   themeState,
   whisperTranscriptState
 } from "../utils/atoms";
-import {
-  initializeLlama,
-  realtimeLlamaInference,
-  resetLlama
-} from "../utils/llama";
+import { initializeLlama, realtimeLlamaInference } from "../utils/llama";
 import { getTheme } from "../utils/themes";
 import { initializeTrackPlayer } from "../utils/trackplayer";
 import {
@@ -69,20 +67,56 @@ export default function Home() {
     bottomSheetContentState
   );
 
-  useEffect(() => {
-    console.log("eeeeeeeeee");
-    if (mapWhisperTranscriptToProcessingState(whisperTranscript) === "done") {
-      setLlamaInput(whisperTranscript.data.result);
-      realtimeLlamaInference();
-    }
-  }, [whisperTranscript, setLlamaInput]);
-
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
   const setTheme = useSetRecoilState(themeState);
   useEffect(() => {
     setTheme(colorScheme);
   }, [colorScheme, setTheme]);
+
+  const currentToast = useToastController();
+
+  const showAsSummarizing = () => {
+    currentToast.show("Summarizing", {
+      leftIcon: <TextQuote />,
+      message: "Slide To Stop",
+      backgroundColor: theme.pallete.blue[500],
+      color: theme.colors.text,
+      onDismiss: () => {
+        if (bottomSheetContent == "summary") {
+          showAsDone();
+        }
+        llamaContext.stopCompletion();
+      }
+    });
+  };
+
+  const showAsDone = () => {
+    currentToast.show("Done!", {
+      leftIcon: <WrapText />,
+      message: "Slide To Regenerate",
+      backgroundColor: theme.pallete.green[500],
+      color: theme.colors.text,
+      onDismiss: () => {
+        realtimeLlamaInference();
+        if (bottomSheetContent == "summary") {
+          showAsSummarizing();
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (mapWhisperTranscriptToProcessingState(whisperTranscript) === "done") {
+      setLlamaInput(whisperTranscript.data.result);
+      realtimeLlamaInference();
+      showAsSummarizing();
+
+      if (bottomSheetContent != "summary") {
+        currentToast.hide();
+      }
+    }
+  }, [currentToast, whisperTranscript, setLlamaInput, bottomSheetContent]);
 
   useEffect(() => {
     const init = async () => {
@@ -171,23 +205,7 @@ export default function Home() {
       );
       break;
     case "summary":
-      bottomSheetInternals = (
-        <>
-          <Text>Topic: {llamaOutput.topic}</Text>
-          <ScrollView
-            ref={(ref) => {
-              this.scrollView = ref;
-            }}
-            onContentSizeChange={() =>
-              this.scrollView.scrollToEnd({ animated: true })
-            }
-            flexGrow={1}
-            padding="$2"
-          >
-            <Text>{llamaOutput.summary}</Text>
-          </ScrollView>
-        </>
-      );
+      bottomSheetInternals = <LlamaTranscript />;
       break;
   }
 
@@ -226,82 +244,6 @@ export default function Home() {
               height="$10"
             />
           )}
-
-          <Group
-            separator={
-              <Separator
-                vertical
-                borderColor={theme.colors.secondary}
-              />
-            }
-            borderWidth={1}
-            borderColor={theme.colors.secondary}
-            backgroundColor={theme.colors.primary}
-            orientation="horizontal"
-          >
-            <Group.Item>
-              <Button
-                flexGrow={1}
-                disabled={
-                  !llamaContext ||
-                  llamaOutput.isProcessing ||
-                  llamaInput.length == 0
-                }
-                opacity={
-                  !llamaContext ||
-                  llamaOutput.isProcessing ||
-                  llamaInput.length == 0
-                    ? 0.5
-                    : 1
-                }
-                icon={Bug}
-                backgroundColor={theme.colors.primary}
-                color={theme.colors.text}
-                pressStyle={{ backgroundColor: theme.colors.secondary }}
-                hoverStyle={{ backgroundColor: theme.colors.secondary }}
-                onPress={() => {
-                  if (llamaContext) {
-                    realtimeLlamaInference();
-                  }
-                }}
-              >
-                Retry
-              </Button>
-            </Group.Item>
-            <Group.Item>
-              <Button
-                flexGrow={0}
-                icon={ClipboardSignature}
-                backgroundColor={theme.colors.primary}
-                color={theme.colors.text}
-                pressStyle={{ backgroundColor: theme.colors.secondary }}
-                hoverStyle={{ backgroundColor: theme.colors.secondary }}
-                onPress={() => {
-                  setLlamaEditorVisible(!llamaEditorVisible);
-                }}
-              >
-                Edit
-              </Button>
-            </Group.Item>
-            <Group.Item>
-              <Button
-                disabled={!llamaContext || llamaOutput.isProcessing}
-                opacity={!llamaContext || llamaOutput.isProcessing ? 0.5 : 1}
-                icon={Wrench}
-                backgroundColor={theme.colors.primary}
-                color={theme.colors.text}
-                pressStyle={{ backgroundColor: theme.colors.secondary }}
-                hoverStyle={{ backgroundColor: theme.colors.secondary }}
-                onPress={() => {
-                  if (llamaContext) {
-                    resetLlama();
-                  }
-                }}
-              >
-                Reset
-              </Button>
-            </Group.Item>
-          </Group>
         </YStack>
       </YStack>
       <YStack
