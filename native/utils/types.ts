@@ -45,6 +45,11 @@ export type DeviceInformation = {
 // ---------------------------------------------------------------- Bottom sheet
 export type BottomSheetView = "summary" | "options" | "transcribe" | "photo";
 
+export type BottomSheetPosition = {
+  current: number;
+  last: number;
+};
+
 // ---------------------------------------------------------------- Toasts
 export type ToastInformation = {
   title: string;

@@ -39,7 +39,7 @@ export default function PatientRow(props: PatientRowProps) {
         router.push(`/pages/PatientDetail`);
       }}
       enterStyle={{
-        y: 5000 * ((props.index + 1) * 10)
+        y: 10000 * ((props.index + 1) * 100)
       }}
     >
       <Card.Header
@@ -67,10 +67,6 @@ export default function PatientRow(props: PatientRowProps) {
           )}
         </YGroup>
       </Card.Header>
-      {/* <Card.Footer padded>
-        <XStack flex={1} />
-        <Button borderRadius="$10">Purchase</Button>
-      </Card.Footer> */}
     </Card>
   );
 }

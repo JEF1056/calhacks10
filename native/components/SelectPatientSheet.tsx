@@ -23,12 +23,13 @@ export default function SelectPatientSheet() {
   const setBottomSheetContent = useSetRecoilState(bottomSheetContentState);
   const [patientWasReadyWhenLoaded, setPatientWasReadyWhenLoaded] =
     useState<boolean>(false);
+  const bottomSheetOpen = useRecoilValue(bottomSheetOpenState);
 
   useEffect(() => {
     if (currentSelectedPatient != undefined) {
       setPatientWasReadyWhenLoaded(true);
     }
-  }, []);
+  }, [bottomSheetOpen]);
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
@@ -82,6 +83,7 @@ export default function SelectPatientSheet() {
         <Button
           size={"$6"}
           flexGrow={patientWasReadyWhenLoaded ? 1 : 0}
+        borderRadius={"$10"}
           onPress={() => {
             setBottomSheetContent("photo");
           }}

@@ -10,7 +10,7 @@ import {
 import { Toast, useToastState } from "@tamagui/toast";
 import { debounce } from "lodash";
 import { getRecoil, setRecoil } from "recoil-nexus";
-import { XStack, YStack } from "tamagui";
+import { Spinner, XStack, YStack } from "tamagui";
 
 import {
   bottomSheetContentState,
@@ -20,10 +20,7 @@ import {
 } from "../utils/atoms";
 import { realtimeLlamaInference } from "../utils/llama";
 import { getTheme } from "../utils/themes";
-import {
-  startWhisperRealtimeTranscription,
-  stopWhisperRealtimeTranscription
-} from "../utils/whisper";
+import { stopWhisperRealtimeTranscription } from "../utils/whisper";
 
 export function ToastComponent() {
   const colorScheme = useColorScheme();
@@ -72,7 +69,7 @@ export function ToastComponent() {
           {!!currentToast.message && (
             <Toast.Description
               color={currentToast.color || theme.colors.text}
-              opacity={0.6}
+              opacity={0.8}
             >
               {currentToast.message}
             </Toast.Description>
@@ -154,7 +151,7 @@ export function showWhisperAsProcessing(
 
   currentToast.hide();
   currentToast.show("Processing", {
-    leftIcon: <Loader />,
+    leftIcon: <Spinner color={theme.colors.text} />,
     backgroundColor: theme.pallete.blue[500],
     color: theme.colors.text,
     onDismiss: (event) => {
@@ -166,32 +163,36 @@ export function showWhisperAsProcessing(
 export function showWhisperAsDone(currentToast, colorScheme: ColorSchemeName) {
   const theme = getTheme(colorScheme);
 
-  currentToast.hide();
-  currentToast.show("Done!", {
-    leftIcon: <Check />,
-    backgroundColor: theme.pallete.green[500],
-    color: theme.colors.text,
-    message: "Slide To Continue",
-    onDismiss: () => {
-      setRecoil(bottomSheetContentState, "summary");
-      realtimeLlamaInference();
-      showLlamaAsSummarizing(currentToast, colorScheme);
-      setRecoil(whisperTranscriptState, undefined);
-    }
-  });
+  if (getRecoil(bottomSheetOpenState)) {
+    currentToast.hide();
+    currentToast.show("Done!", {
+      leftIcon: <Check />,
+      backgroundColor: theme.pallete.green[500],
+      color: theme.colors.text,
+      message: "Slide To Continue",
+      onDismiss: () => {
+        setRecoil(bottomSheetContentState, "summary");
+        realtimeLlamaInference();
+        showLlamaAsSummarizing(currentToast, colorScheme);
+        setRecoil(whisperTranscriptState, undefined);
+      }
+    });
+  }
 }
 
 export function showWhisperAsError(currentToast, colorScheme: ColorSchemeName) {
   const theme = getTheme(colorScheme);
 
-  currentToast.hide();
-  currentToast.show("Done!", {
-    leftIcon: <AlertOctagon />,
-    backgroundColor: theme.pallete.red[500],
-    color: theme.colors.text,
-    message: "Slide To Retry",
-    onDismiss: () => {
-      showWhisperAsRecording(currentToast, colorScheme);
-    }
-  });
+  if (getRecoil(bottomSheetOpenState)) {
+    currentToast.hide();
+    currentToast.show("Done!", {
+      leftIcon: <AlertOctagon />,
+      backgroundColor: theme.pallete.red[500],
+      color: theme.colors.text,
+      message: "Slide To Retry",
+      onDismiss: () => {
+        showWhisperAsRecording(currentToast, colorScheme);
+      }
+    });
+  }
 }

@@ -3,7 +3,13 @@ import { useColorScheme } from "react-native";
 import useKeyboard from "@rnhooks/keyboard";
 import { ArrowDown } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState
+} from "recoil";
+import { resetRecoil, setRecoil } from "recoil-nexus";
 import { H3, Sheet, Text } from "tamagui";
 import { YStack } from "tamagui";
 
@@ -11,6 +17,7 @@ import {
   bottomSheetContentState,
   bottomSheetOpenState,
   bottomSheetOverlayOpacityState,
+  bottomSheetPositionState,
   currentSelectedPatientState
 } from "../utils/atoms";
 import { getTheme } from "../utils/themes";
@@ -21,18 +28,28 @@ type BottomSheetProps = {
   onCloseStopFunction?: () => void;
 };
 
+export function closeBottomSheet(currentToast, onClose?: () => void) {
+  if (onClose) {
+    onClose();
+  }
+
+  if (currentToast != undefined) {
+    currentToast.hide();
+  }
+
+  resetRecoil(bottomSheetPositionState);
+  resetRecoil(bottomSheetContentState);
+  resetRecoil(bottomSheetOpenState);
+}
+
 export function BottomSheetComponent(props: BottomSheetProps) {
-  const [open, setOpen] = useRecoilState(bottomSheetOpenState);
+  const open = useRecoilValue(bottomSheetOpenState);
   const setBottomSheetOverlayOpacity = useSetRecoilState(
     bottomSheetOverlayOpacityState
   );
-  const resetBottomSheetContent = useResetRecoilState(bottomSheetContentState);
   const snapPoints = [85, 35, 25, 0];
   const keyboardVisible = useKeyboard()[0];
-  const [position, setPosition] = useState({
-    current: 0,
-    last: 0
-  });
+  const [position, setPosition] = useRecoilState(bottomSheetPositionState);
   const currentToast = useToastController();
   const setCurrentSelectedPatient = useSetRecoilState(
     currentSelectedPatientState
@@ -62,16 +79,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
   } else if (position.current == snapPoints.length - 1) {
     console.log("trigger 3");
     // If this is a valid sheet close, call the onCloseStopFunction and dismiss
-    if (props.onCloseStopFunction) {
-      props.onCloseStopFunction();
-    }
-    setPosition({
-      current: 0,
-      last: 0
-    });
-    resetBottomSheetContent();
-    setOpen(false);
-    currentToast.hide();
+    closeBottomSheet(currentToast, props.onCloseStopFunction);
   }
 
   useEffect(() => {
@@ -92,7 +100,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
           last: last.current
         }));
         setBottomSheetOverlayOpacity(
-          event == snapPoints.length - 3 ? 0.1 : undefined
+          event == snapPoints.length - 3 ? 0.15 : undefined
         );
       }}
       position={position.current}
@@ -115,7 +123,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
         paddingBottom="$2"
         textAlign="center"
         color={theme.colors.text}
-        opacity={0.5}
+        opacity={0.7}
       >
         {position.current < snapPoints.length - 3 &&
           "Slide Down To View Profile"}
@@ -125,7 +133,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
       </Text>
       <Sheet.Handle
         backgroundColor={theme.colors.text}
-        opacity={0.5}
+        opacity={0.7}
       />
       <Sheet.Frame
         marginTop="$1"
@@ -150,7 +158,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
             <ArrowDown />
           </YStack>
         ) : (
-          props.internalComponent
+          open && props.internalComponent
         )}
       </Sheet.Frame>
     </Sheet>

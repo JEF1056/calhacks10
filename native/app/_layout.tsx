@@ -53,7 +53,7 @@ export default function Layout() {
           <ToastViewport
             zIndex={100_000 + 1}
             flexDirection="column"
-            top={50}
+            top={52}
             left={0}
             right={0}
           />

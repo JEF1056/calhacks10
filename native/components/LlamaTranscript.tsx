@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { useToastController } from "@tamagui/toast";
 import { useRecoilValue } from "recoil";
-import { H3, Separator, Sheet, Text } from "tamagui";
+import { Button, H3, Separator, Sheet, Text, XGroup } from "tamagui";
 
 import {
   bottomSheetContentState,
@@ -12,6 +12,7 @@ import {
 import { getTheme } from "../utils/themes";
 
 import { showLlamaAsDone } from "./Toast";
+import { closeBottomSheet } from "./BottomSheet";
 
 export default function LlamaTranscript() {
   const llamaContext = useRecoilValue(llamaContextState);
@@ -57,6 +58,26 @@ export default function LlamaTranscript() {
       >
         <Text>{llamaOutput.summary}</Text>
       </Sheet.ScrollView>
+      <Separator
+        marginVertical={15}
+        borderColor={theme.colors.backgroundContrast}
+        borderWidth={1}
+        width="100%"
+        borderRadius={"$10"}
+      />
+      <Button
+        size={"$6"}
+        backgroundColor={theme.colors.primary}
+        borderRadius={"$10"}
+        onPress={() => {
+          closeBottomSheet(currentToast);
+        }}
+        width="100%"
+        pressStyle={{ backgroundColor: theme.colors.contrast }}
+        hoverStyle={{ backgroundColor: theme.colors.contrast }}
+      >
+        Exit
+      </Button>
     </>
   );
 }

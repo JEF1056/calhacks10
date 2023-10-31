@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
+import { ListMusic } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { useRecoilValue } from "recoil";
 import {
@@ -23,7 +24,6 @@ import {
 } from "../../utils/atoms";
 import { mockImagesMap } from "../../utils/constants";
 import { getTheme } from "../../utils/themes";
-import { ListMusic } from "@tamagui/lucide-icons";
 
 export default function PatientDetail() {
   const currentSelectedPatient = useRecoilValue(currentSelectedPatientState);
