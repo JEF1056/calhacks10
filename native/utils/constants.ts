@@ -57,9 +57,13 @@ export const patientInfoKey = "patientInformation";
 
 // TODO: these are mock images.
 export const mockImagesMap = {
-  Anh: require("../../native/assets/MockImages/Anh.png"),
-  Boba: require("../../native/assets/MockImages/Boba.jpg"),
-  Chonkers: require("../../native/assets/MockImages/Chonkers.jpg"),
-  Lem: require("../../native/assets/MockImages/Lem.jpeg"),
-  Mochi: require("../../native/assets/MockImages/Mochi.jpg")
+  Ananya: require("../../native/assets/MockImages/Ananya.png"),
+  Clara: require("../../native/assets/MockImages/Clara.png"),
+  Ezekiel: require("../../native/assets/MockImages/Ezekiel.png"),
+  Kai: require("../../native/assets/MockImages/Kai.png"),
+  Layla: require("../../native/assets/MockImages/Layla.png"),
+  Lilia: require("../../native/assets/MockImages/Lilia.png"),
+  Martin: require("../../native/assets/MockImages/Martin.png"),
+  Nadia: require("../../native/assets/MockImages/Nadia.png"),
+  Raj: require("../../native/assets/MockImages/Raj.png")
 };

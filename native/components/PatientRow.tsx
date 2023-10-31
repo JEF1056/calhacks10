@@ -1,12 +1,14 @@
+import { useColorScheme } from "react-native";
 import { router } from "expo-router";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Avatar, Card, H4, Paragraph, YGroup } from "tamagui";
+import { Avatar, H4, Paragraph, YGroup, YStack } from "tamagui";
 
 import {
   currentSelectedPatientState,
   patientInformationState
 } from "../utils/atoms";
 import { mockImagesMap } from "../utils/constants";
+import { getTheme } from "../utils/themes";
 
 export type PatientRowProps = {
   patientId: string;
@@ -27,13 +29,17 @@ export default function PatientRow(props: PatientRowProps) {
     return <></>;
   }
 
+  const colorScheme = useColorScheme();
+  const theme = getTheme(colorScheme);
+
   return (
-    <Card
+    <YStack
       animation={"lazy"}
-      elevate
-      size="$4"
+      backgroundColor={"$background"}
       margin="$4"
-      bordered
+      borderWidth="$1"
+      borderColor={theme.colors.neutral}
+      borderRadius={"$4"}
       onPress={() => {
         setCurrentSelectedPatient(patient);
         router.push(`/pages/PatientDetail`);
@@ -41,32 +47,31 @@ export default function PatientRow(props: PatientRowProps) {
       enterStyle={{
         y: 10000 * ((props.index + 1) * 100)
       }}
+      paddingVertical="$5"
+      paddingHorizontal="$4"
+      flexDirection="row"
+      gap="$4"
+      alignItems="center"
+      maxHeight="$14"
     >
-      <Card.Header
-        padded
-        flexDirection="row"
-        gap="$4"
-        alignItems="center"
+      <Avatar
+        circular
+        size="$6"
       >
-        <Avatar
-          circular
-          size="$6"
-        >
-          <Avatar.Image source={mockImagesMap[patient.picturePath]} />
-          <Avatar.Fallback bc="gray" />
-        </Avatar>
-        <YGroup>
-          <H4>{patient.name}</H4>
-          {patient.summary && (
-            <Paragraph
-              theme="alt2"
-              maxWidth={"85%"}
-            >
-              {patient.summary}
-            </Paragraph>
-          )}
-        </YGroup>
-      </Card.Header>
-    </Card>
+        <Avatar.Image source={mockImagesMap[patient.picturePath]} />
+        <Avatar.Fallback bc="gray" />
+      </Avatar>
+      <YGroup>
+        <H4>{patient.name}</H4>
+        {patient.summary && (
+          <Paragraph
+            theme="alt2"
+            maxWidth={"85%"}
+          >
+            {patient.summary}
+          </Paragraph>
+        )}
+      </YGroup>
+    </YStack>
   );
 }

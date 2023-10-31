@@ -13,6 +13,7 @@ import {
   ScrollView,
   Separator,
   Text,
+  YGroup,
   YStack
 } from "tamagui";
 
@@ -52,82 +53,84 @@ export default function PatientDetail() {
       </AnimatePresence>
 
       <YStack
-        flexGrow={1}
-        paddingVertical="$4"
+        borderWidth="$1"
+        borderColor={theme.colors.neutral}
+        borderRadius={"$4"}
+        backgroundColor="$background"
+        padding="$4"
+        marginHorizontal="$4"
+        marginTop="$4"
+        maxHeight={"50%"}
+        justifyContent="center"
+        alignItems="center"
       >
-        <Card
-          elevate
-          size="$4"
-          bordered
-          marginHorizontal="$4"
-          gap="$4"
-          maxHeight={"60%"}
+        <Avatar
+          circular
+          size="$10"
         >
-          <Card.Header
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Avatar
-              circular
-              size="$10"
-            >
-              <Avatar.Image
-                src={mockImagesMap[currentSelectedPatient.picturePath]}
-              />
-              <Avatar.Fallback backgroundColor="gray" />
-            </Avatar>
-            <H2>{currentSelectedPatient.name}</H2>
-            <Paragraph theme="alt1">
-              Last seen:{" "}
-              {currentSelectedPatient.lastSeen.format("YYYY-MM-DD HH:mm:ss")}
-            </Paragraph>
-            <Separator
-              borderColor={theme.colors.neutral}
-              marginVertical="$4"
-              width="100%"
-            />
-            <ScrollView maxHeight={"35%"}>
-              <Text>
-                {currentSelectedPatient.summary +
-                  "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
-              </Text>
-            </ScrollView>
-          </Card.Header>
-        </Card>
-
+          <Avatar.Image
+            src={mockImagesMap[currentSelectedPatient.picturePath]}
+          />
+          <Avatar.Fallback backgroundColor="gray" />
+        </Avatar>
+        <H2>{currentSelectedPatient.name}</H2>
+        <Paragraph theme="alt1">
+          Last seen:{" "}
+          {currentSelectedPatient.lastSeen.format("YYYY-MM-DD HH:mm:ss")}
+        </Paragraph>
         <Separator
-          marginVertical="$4"
           borderColor={theme.colors.neutral}
+          marginVertical="$4"
+          width="100%"
         />
+        <ScrollView>
+          <Text>{currentSelectedPatient.summary}</Text>
+        </ScrollView>
+      </YStack>
 
-        <ScrollView flexGrow={1}>
-          <Card
-            elevate
-            size="$4"
-            bordered
-            marginHorizontal="$4"
-            gap="$4"
-          >
-            <Card.Header
+      <Separator
+        marginVertical="$4"
+        borderColor={theme.colors.neutral}
+      />
+
+      <ScrollView
+        flexGrow={1}
+        marginBottom="$4"
+      >
+        <YStack gap="$2">
+          {currentSelectedPatient.ingested.map((ingestedData) => (
+            <YGroup
+              key={ingestedData.id}
+              size="$4"
+              borderWidth="$1"
+              borderColor={theme.colors.neutral}
+              borderRadius={"$4"}
+              backgroundColor="$background"
+              padding="$4"
+              marginHorizontal="$4"
               justifyContent="center"
               alignItems="center"
-              gap="$4"
               flexDirection="row"
+              gap="$4"
+              maxHeight="$10"
             >
               <ListMusic size="$2" />
               <YStack width="$18">
-                <H4>Summary</H4>
+                <H4>
+                  Visit, {ingestedData.createdAt.format("YYYY-MM-DD HH:mm")}
+                </H4>
                 <Text
+                  maxWidth={"90%"}
                   opacity={0.5}
                   ellipsizeMode="tail"
                 >
-                  {currentSelectedPatient.summary}
+                  {ingestedData.transcript}
                 </Text>
               </YStack>
-            </Card.Header>
-          </Card>
-        </ScrollView>
-      </YStack>
+            </YGroup>
+          ))}
+        </YStack>
+      </ScrollView>
 
       {/* Footer */}
       <Footer />

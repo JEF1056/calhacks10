@@ -10,11 +10,11 @@ import { RecoilRoot } from "recoil";
 import RecoilNexus from "recoil-nexus";
 import { TamaguiProvider, Text, Theme } from "tamagui";
 
+import BottomSheetOverlay from "../components/BottomSheetOverlay";
+import WhisperToastStateManager from "../components/WhisperToastStateManager";
 import config from "../tamagui.config";
 import PatientInformationProvider from "../utils/patientInformationService";
 import { getTheme } from "../utils/themes";
-import WhisperToastStateManager from "../components/WhisperToastStateManager";
-import BottomSheetOverlay from "../components/BottomSheetOverlay";
 
 SplashScreen.preventAutoHideAsync();
 

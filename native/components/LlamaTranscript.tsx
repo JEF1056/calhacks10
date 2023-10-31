@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { useToastController } from "@tamagui/toast";
 import { useRecoilValue } from "recoil";
-import { Button, H3, Separator, Sheet, Text, XGroup } from "tamagui";
+import { Button, H3, Separator, Sheet, Text } from "tamagui";
 
 import {
   bottomSheetContentState,
@@ -11,8 +11,8 @@ import {
 } from "../utils/atoms";
 import { getTheme } from "../utils/themes";
 
-import { showLlamaAsDone } from "./Toast";
 import { closeBottomSheet } from "./BottomSheet";
+import { showLlamaAsDone } from "./Toast";
 
 export default function LlamaTranscript() {
   const llamaContext = useRecoilValue(llamaContextState);

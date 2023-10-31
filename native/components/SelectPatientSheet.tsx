@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { Camera } from "@tamagui/lucide-icons";
+import { Camera, X } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { Button, Separator, Sheet, View } from "tamagui";
+import { Avatar, Button, Separator, Sheet, Text, View, XGroup } from "tamagui";
 
 import {
   bottomSheetContentState,
@@ -14,6 +14,8 @@ import {
 import { getTheme } from "../utils/themes";
 
 import WhisperRecordButton from "./WhisperRecordButton";
+import { YGroup } from "tamagui";
+import { mockImagesMap } from "../utils/constants";
 
 export default function SelectPatientSheet() {
   const patientList = useRecoilValue(patientInformationState);
@@ -44,23 +46,44 @@ export default function SelectPatientSheet() {
       {!patientWasReadyWhenLoaded && (
         <>
           <Sheet.ScrollView flexGrow={5}>
-            {patientList.map((patient) => (
-              <Button
-                backgroundColor={
-                  currentSelectedPatient &&
-                  currentSelectedPatient.id == patient.id
-                    ? theme.colors.secondary
-                    : theme.colors.background
-                }
-                key={patient.id}
-                onPress={() => {
-                  setCurrentSelectedPatient(patient);
-                  router.push(`/pages/PatientDetail`);
-                }}
-              >
-                {patient.name}
-              </Button>
-            ))}
+            <YGroup separator={<Separator borderColor={theme.colors.accent} />}>
+              {patientList.map((patient) => (
+                <Button
+                  height="$6"
+                  key={patient.id}
+                  backgroundColor={
+                    currentSelectedPatient &&
+                    currentSelectedPatient.id == patient.id
+                      ? theme.colors.secondary
+                      : theme.colors.background
+                  }
+                  onPress={() => {
+                    setCurrentSelectedPatient(patient);
+                    router.push(`/pages/PatientDetail`);
+                  }}
+                >
+                  <View
+                    gap="$2"
+                    flexDirection="row"
+                    alignItems="center"
+                    width="100%"
+                  >
+                    <Avatar circular>
+                      <Avatar.Image
+                        source={{ uri: mockImagesMap[patient.picturePath] }}
+                      />
+                      <Avatar.Fallback bc="gray" />
+                    </Avatar>
+                    <Text
+                      flexGrow={1}
+                      textAlign="right"
+                    >
+                      {patient.name}
+                    </Text>
+                  </View>
+                </Button>
+              ))}
+            </YGroup>
           </Sheet.ScrollView>
 
           <Separator
@@ -83,7 +106,7 @@ export default function SelectPatientSheet() {
         <Button
           size={"$6"}
           flexGrow={patientWasReadyWhenLoaded ? 1 : 0}
-        borderRadius={"$10"}
+          borderRadius={"$10"}
           onPress={() => {
             setBottomSheetContent("photo");
           }}

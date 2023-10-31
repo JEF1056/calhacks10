@@ -71,14 +71,16 @@ export type AudioRecording = {
   id: number;
   patientId: number;
   audioPath: string;
-  transcript: string;
-  createdAt: Date;
+  transcript?: string;
+  summary?: string;
+  createdAt: moment.Moment;
 };
 
 export type DocumentPicture = {
   id: number;
   patientId: number;
   picturePath: string;
-  transcript: string;
-  createdAt: Date;
+  transcript?: string;
+  summary?: string;
+  createdAt: moment.Moment;
 };
