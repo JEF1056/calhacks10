@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useColorScheme } from "react-native";
 import { Camera, useCameraDevice } from "react-native-vision-camera";
 import TextRecognition from "@react-native-ml-kit/text-recognition";
 import { ArrowLeft } from "@tamagui/lucide-icons";
@@ -8,8 +9,6 @@ import { Button, Text, View } from "tamagui";
 
 import { llamaInputState } from "../../utils/atoms";
 import { realtimeLlamaInference } from "../../utils/llama";
-
-import { useColorScheme } from "react-native";
 import { getTheme } from "../../utils/themes";
 
 export default function DocumentScanPage() {
@@ -67,7 +66,6 @@ export default function DocumentScanPage() {
           realtimeLlamaInference();
           router.back();
         }}
-
         backgroundColor={theme.colors.contrast}
         color={theme.colors.background}
         pressStyle={{ backgroundColor: theme.colors.primary }}

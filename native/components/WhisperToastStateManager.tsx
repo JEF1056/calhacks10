@@ -25,8 +25,6 @@ export default function WhisperToastStateManager() {
     const whisperProcessingState =
       mapWhisperTranscriptToProcessingState(whisperTranscript);
 
-    console.log(lastProcessingState, whisperProcessingState);
-
     if (lastProcessingState !== whisperProcessingState) {
       switch (whisperProcessingState) {
         case "idle":

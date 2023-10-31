@@ -96,14 +96,6 @@ export default function AudioPlayer() {
     playerProgress.position
   );
 
-  // console.log(
-  //   playerProgress.position,
-  //   duration,
-  //   " | ",
-  //   computedPosition,
-  //   computedDuration
-  // );
-
   let [statusColor, statusText] = [theme.pallete.gray, "Unknown"];
   switch (mapWhisperTranscriptToProcessingState(whisperTranscript)) {
     case "idle":

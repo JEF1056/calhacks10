@@ -62,7 +62,6 @@ export function BottomSheetComponent(props: BottomSheetProps) {
     position.current == snapPoints.length - 1 &&
     position.last < snapPoints.length - 3
   ) {
-    console.log("trigger 1");
     setPosition({
       current: snapPoints.length - 3,
       last: snapPoints.length - 3
@@ -71,13 +70,11 @@ export function BottomSheetComponent(props: BottomSheetProps) {
     position.current == snapPoints.length - 1 &&
     position.last <= snapPoints.length - 3
   ) {
-    console.log("trigger 2");
     setPosition({
       current: snapPoints.length - 2,
       last: snapPoints.length - 2
     });
   } else if (position.current == snapPoints.length - 1) {
-    console.log("trigger 3");
     // If this is a valid sheet close, call the onCloseStopFunction and dismiss
     closeBottomSheet(currentToast, props.onCloseStopFunction);
   }
@@ -91,9 +88,6 @@ export function BottomSheetComponent(props: BottomSheetProps) {
       open={open}
       zIndex={100_000}
       modal={true}
-      onOpenChange={(event) => {
-        console.log("onopenchange", event);
-      }}
       onPositionChange={(event) => {
         setPosition((last) => ({
           current: event,

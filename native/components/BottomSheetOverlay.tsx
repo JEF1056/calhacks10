@@ -19,8 +19,6 @@ export default function BottomSheetOverlay() {
 
   const theme = getTheme(colorScheme);
 
-  console.log(bottomSheetOverlayOpacity);
-
   return (
     <YStack
       position="absolute"

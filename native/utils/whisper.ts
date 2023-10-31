@@ -285,7 +285,7 @@ export function mapWhisperTranscriptToProcessingState(
   return "unknown";
 }
 
-function postProcessPipeline(text: string) {
+function whisperPostProcessPipeline(text: string) {
   text = text.replace(/\s*[[<(]\s*.*?\s*[)>\]]\s*$|^\s*/gm, "");
 
   return text;
@@ -295,9 +295,9 @@ export function whisperPostProcessResult(
   transcriptData: TranscribeResult
 ): TranscribeResult {
   if (transcriptData) {
-    transcriptData.result = postProcessPipeline(transcriptData.result);
+    transcriptData.result = whisperPostProcessPipeline(transcriptData.result);
     if (transcriptData.segments.length > 0) {
-      transcriptData.segments[0].text = postProcessPipeline(
+      transcriptData.segments[0].text = whisperPostProcessPipeline(
         transcriptData.segments[0].text
       );
     }

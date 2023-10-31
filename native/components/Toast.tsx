@@ -1,12 +1,6 @@
 import React from "react";
 import { ColorSchemeName, useColorScheme } from "react-native";
-import {
-  AlertOctagon,
-  Check,
-  Loader,
-  Mic,
-  TextQuote
-} from "@tamagui/lucide-icons";
+import { AlertOctagon, Check, Mic, TextQuote } from "@tamagui/lucide-icons";
 import { Toast, useToastState } from "@tamagui/toast";
 import { debounce } from "lodash";
 import { getRecoil, setRecoil } from "recoil-nexus";
@@ -16,6 +10,7 @@ import {
   bottomSheetContentState,
   bottomSheetOpenState,
   llamaContextState,
+  llamaInputState,
   whisperTranscriptState
 } from "../utils/atoms";
 import { realtimeLlamaInference } from "../utils/llama";
@@ -31,7 +26,6 @@ export function ToastComponent() {
 
   const debouncedDismiss = debounce(
     (event) => {
-      console.log(event.directEventTypes);
       if (currentToast.onDismiss) {
         currentToast.onDismiss(event);
       }
@@ -108,7 +102,6 @@ export function showLlamaAsSummarizing(
 export function showLlamaAsDone(currentToast, colorScheme: ColorSchemeName) {
   const theme = getTheme(colorScheme);
   const bottomSheetContent = getRecoil(bottomSheetContentState);
-  const llamaContext = getRecoil(llamaContextState);
 
   currentToast.hide();
   currentToast.show("Done", {
@@ -171,9 +164,11 @@ export function showWhisperAsDone(currentToast, colorScheme: ColorSchemeName) {
       color: theme.colors.text,
       message: "Slide To Continue",
       onDismiss: () => {
+        const whisperTranscript = getRecoil(whisperTranscriptState);
+        setRecoil(llamaInputState, whisperTranscript.data.result);
+        showLlamaAsSummarizing(currentToast, colorScheme);
         setRecoil(bottomSheetContentState, "summary");
         realtimeLlamaInference();
-        showLlamaAsSummarizing(currentToast, colorScheme);
         setRecoil(whisperTranscriptState, undefined);
       }
     });
