@@ -49,7 +49,7 @@ export default function WhisperTranscript() {
           })}
         </Text>
       ) : (
-        <Text>Transcript not available</Text>
+        <Text opacity={0.5}>Transcript not available</Text>
       )}
     </Sheet.ScrollView>
   );

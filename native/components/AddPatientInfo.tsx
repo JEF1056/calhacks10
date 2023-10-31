@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Button } from "tamagui";
 
 import {
@@ -8,7 +9,6 @@ import {
   whisperTranscriptState
 } from "../utils/atoms";
 import { getTheme } from "../utils/themes";
-import { useEffect, useState } from "react";
 import { mapWhisperTranscriptToProcessingState } from "../utils/whisper";
 
 export default function AddPatientInfo() {
@@ -19,8 +19,7 @@ export default function AddPatientInfo() {
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
-  const [bottomSheetOpen, setBottomSheetOpen] =
-    useRecoilState(bottomSheetOpenState);
+  const setBottomSheetOpen = useSetRecoilState(bottomSheetOpenState);
   const setBottomSheetContent = useSetRecoilState(bottomSheetContentState);
   const whisperTranscript = useRecoilValue(whisperTranscriptState);
   const [addPatientButtonInternalProps, setAddPatientButtonInternalProps] =
@@ -70,7 +69,7 @@ export default function AddPatientInfo() {
       pressStyle={{ backgroundColor: theme.colors.contrast }}
       hoverStyle={{ backgroundColor: theme.colors.contrast }}
     >
-      Start Session
+      {addPatientButtonInternalProps.buttonLabel}
     </Button>
   );
 }

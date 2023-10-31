@@ -1,9 +1,13 @@
+import { useEffect } from "react";
 import { useColorScheme } from "react-native";
+import { router } from "expo-router";
 import { useRecoilValue } from "recoil";
 import {
+  AnimatePresence,
   Avatar,
   Card,
   H2,
+  H4,
   Paragraph,
   ScrollView,
   Separator,
@@ -11,22 +15,45 @@ import {
   YStack
 } from "tamagui";
 
-import AddPatientInfo from "../../components/AddPatientInfo";
-import { currentSelectedPatientState } from "../../utils/atoms";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import {
+  bottomSheetOpenState,
+  currentSelectedPatientState
+} from "../../utils/atoms";
 import { mockImagesMap } from "../../utils/constants";
 import { getTheme } from "../../utils/themes";
+import { ListMusic } from "@tamagui/lucide-icons";
 
 export default function PatientDetail() {
   const currentSelectedPatient = useRecoilValue(currentSelectedPatientState);
+  const bottomSheetOpen = useRecoilValue(bottomSheetOpenState);
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
 
+  useEffect(() => {
+    if (!currentSelectedPatient) {
+      router.push("/");
+    }
+  }, [currentSelectedPatient]);
+
+  if (!currentSelectedPatient) {
+    return <></>;
+  }
+
   return (
-    <>
+    <YStack
+      backgroundColor={theme.colors.background}
+      height="100%"
+    >
+      <AnimatePresence exitVariant="down">
+        {!bottomSheetOpen && <Header />}
+      </AnimatePresence>
+
       <YStack
         flexGrow={1}
-        maxHeight={"50%"}
+        paddingVertical="$4"
       >
         <Card
           elevate
@@ -34,6 +61,7 @@ export default function PatientDetail() {
           bordered
           marginHorizontal="$4"
           gap="$4"
+          maxHeight={"60%"}
         >
           <Card.Header
             justifyContent="center"
@@ -53,28 +81,56 @@ export default function PatientDetail() {
               Last seen:{" "}
               {currentSelectedPatient.lastSeen.format("YYYY-MM-DD HH:mm:ss")}
             </Paragraph>
-            <Separator borderColor="$neutral" />
-            <ScrollView>
-              <Text flexShrink={1}>{currentSelectedPatient.summary}</Text>
+            <Separator
+              borderColor={theme.colors.neutral}
+              marginVertical="$4"
+              width="100%"
+            />
+            <ScrollView maxHeight={"35%"}>
+              <Text>
+                {currentSelectedPatient.summary +
+                  "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
+              </Text>
             </ScrollView>
           </Card.Header>
         </Card>
 
-        <Separator marginVertical="$4" />
+        <Separator
+          marginVertical="$4"
+          borderColor={theme.colors.neutral}
+        />
+
+        <ScrollView flexGrow={1}>
+          <Card
+            elevate
+            size="$4"
+            bordered
+            marginHorizontal="$4"
+            gap="$4"
+          >
+            <Card.Header
+              justifyContent="center"
+              alignItems="center"
+              gap="$4"
+              flexDirection="row"
+            >
+              <ListMusic size="$2" />
+              <YStack width="$18">
+                <H4>Summary</H4>
+                <Text
+                  opacity={0.5}
+                  ellipsizeMode="tail"
+                >
+                  {currentSelectedPatient.summary}
+                </Text>
+              </YStack>
+            </Card.Header>
+          </Card>
+        </ScrollView>
       </YStack>
 
       {/* Footer */}
-      <YStack
-        backgroundColor={theme.colors.accent}
-        paddingHorizontal="$4"
-        height="$8"
-        justifyContent="center"
-        alignContent="center"
-        borderTopLeftRadius={"$4"}
-        borderTopRightRadius={"$4"}
-      >
-        <AddPatientInfo />
-      </YStack>
-    </>
+      <Footer />
+    </YStack>
   );
 }

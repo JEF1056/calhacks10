@@ -13,6 +13,8 @@ import { TamaguiProvider, Text, Theme } from "tamagui";
 import config from "../tamagui.config";
 import PatientInformationProvider from "../utils/patientInformationService";
 import { getTheme } from "../utils/themes";
+import WhisperToastStateManager from "../components/WhisperToastStateManager";
+import BottomSheetOverlay from "../components/BottomSheetOverlay";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +26,7 @@ export default function Layout() {
 
   const [loaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf")
     //Fredoka: require("../../native/assets/Fredoka/Fredoka-VariableFont_wdth,wght.ttf"),
     //FredokaSemiBold: require("../../native/assets/Fredoka/static/Fredoka-SemiBold.ttf"),
     //RobotoMono: require("../../native/assets/Roboto_Mono/RobotoMono-VariableFont_wght.ttf")
@@ -47,6 +49,15 @@ export default function Layout() {
         >
           <RecoilNexus />
           <PatientInformationProvider />
+          <WhisperToastStateManager />
+          <ToastViewport
+            zIndex={100_000 + 1}
+            flexDirection="column"
+            top={50}
+            left={0}
+            right={0}
+          />
+          <BottomSheetOverlay />
           <StatusBar
             style={theme.dark ? "light" : "dark"}
             backgroundColor={theme.colors.accent}
@@ -59,12 +70,6 @@ export default function Layout() {
                   backgroundColor: theme.colors.accent
                 }}
               >
-                <ToastViewport
-                  flexDirection="column"
-                  top={50}
-                  left={0}
-                  right={0}
-                />
                 <Stack
                   screenOptions={{
                     headerShown: false,

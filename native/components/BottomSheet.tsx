@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import useKeyboard from "@rnhooks/keyboard";
 import { ArrowDown } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { H3, Sheet, Text, YStack } from "tamagui";
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
+import { H3, Sheet, Text } from "tamagui";
+import { YStack } from "tamagui";
 
-import { bottomSheetContentState, bottomSheetOpenState } from "../utils/atoms";
+import {
+  bottomSheetContentState,
+  bottomSheetOpenState,
+  bottomSheetOverlayOpacityState,
+  currentSelectedPatientState
+} from "../utils/atoms";
 import { getTheme } from "../utils/themes";
 
 type BottomSheetProps = {
@@ -17,6 +23,9 @@ type BottomSheetProps = {
 
 export function BottomSheetComponent(props: BottomSheetProps) {
   const [open, setOpen] = useRecoilState(bottomSheetOpenState);
+  const setBottomSheetOverlayOpacity = useSetRecoilState(
+    bottomSheetOverlayOpacityState
+  );
   const resetBottomSheetContent = useResetRecoilState(bottomSheetContentState);
   const snapPoints = [85, 35, 25, 0];
   const keyboardVisible = useKeyboard()[0];
@@ -25,6 +34,9 @@ export function BottomSheetComponent(props: BottomSheetProps) {
     last: 0
   });
   const currentToast = useToastController();
+  const setCurrentSelectedPatient = useSetRecoilState(
+    currentSelectedPatientState
+  );
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
@@ -62,6 +74,10 @@ export function BottomSheetComponent(props: BottomSheetProps) {
     currentToast.hide();
   }
 
+  useEffect(() => {
+    setCurrentSelectedPatient(undefined);
+  }, [setCurrentSelectedPatient]);
+
   return (
     <Sheet
       open={open}
@@ -75,6 +91,9 @@ export function BottomSheetComponent(props: BottomSheetProps) {
           current: event,
           last: last.current
         }));
+        setBottomSheetOverlayOpacity(
+          event == snapPoints.length - 3 ? 0.1 : undefined
+        );
       }}
       position={position.current}
       defaultPosition={snapPoints[0]}
@@ -118,6 +137,7 @@ export function BottomSheetComponent(props: BottomSheetProps) {
         }
         animation="lazy"
         paddingTop={keyboardVisible ? "$8" : "$4"}
+        paddingBottom="$6"
         alignItems="center"
       >
         {position.current == snapPoints.length - 2 ? (

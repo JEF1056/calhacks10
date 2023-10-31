@@ -3,6 +3,7 @@ import { atom } from "recoil";
 import { WhisperContext } from "whisper.rn/src";
 
 import {
+  BottomSheetView,
   LlamaResponse,
   PatientInformation,
   WhisperController,
@@ -81,11 +82,14 @@ export const bottomSheetOpenState = atom<boolean>({
   default: false
 });
 
-export const bottomSheetContentState = atom<
-  "options" | "transcribe" | "photo" | "summary"
->({
+export const bottomSheetContentState = atom<BottomSheetView>({
   key: "bottomSheetContentState",
   default: "options"
+});
+
+export const bottomSheetOverlayOpacityState = atom<number | undefined>({
+  key: "bottomSheetOverlayOpacityState",
+  default: undefined
 });
 
 // ---------------------------------------------------------------- Patient information

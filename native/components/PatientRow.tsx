@@ -10,6 +10,7 @@ import { mockImagesMap } from "../utils/constants";
 
 export type PatientRowProps = {
   patientId: string;
+  index: number;
 };
 
 export default function PatientRow(props: PatientRowProps) {
@@ -28,6 +29,7 @@ export default function PatientRow(props: PatientRowProps) {
 
   return (
     <Card
+      animation={"lazy"}
       elevate
       size="$4"
       margin="$4"
@@ -35,6 +37,9 @@ export default function PatientRow(props: PatientRowProps) {
       onPress={() => {
         setCurrentSelectedPatient(patient);
         router.push(`/pages/PatientDetail`);
+      }}
+      enterStyle={{
+        y: 5000 * ((props.index + 1) * 10)
       }}
     >
       <Card.Header

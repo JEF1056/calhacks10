@@ -303,10 +303,11 @@ const themesBuilder = createThemeBuilder()
       "#1F2020", //text dark
       "#517EA0", //primary
       "#558A6B", //secondary
-      "#C3B5A5", //accent
+      "#746859", //accent
       "#618CAF", //secondary accent (text highlighting)
       "#789EBB", //constrast (diff primary)
-      "#65A17E" //secondary contrast (diff secondary)
+      "#65A17E", //secondary contrast (diff secondary)
+      "#617C7C" //background contrast
     ],
     light: [
       "#EAE4D6", //background
@@ -318,7 +319,8 @@ const themesBuilder = createThemeBuilder()
       "#C3B5A5", //accent
       "#C5D5E2", //secondary accent (text highlighting)
       "#789EBB", //constrast (diff primary)
-      "#65A17E" //secondary contrast (diff secondary)
+      "#65A17E", //secondary contrast (diff secondary)
+      "#B7AA87" //background contrast
     ]
   })
   .addTemplates({
@@ -332,7 +334,8 @@ const themesBuilder = createThemeBuilder()
       textDark: 3,
       neutral: 1,
       contrast: 8,
-      secondaryContrast: 9
+      secondaryContrast: 9,
+      backgroundContrast: 10
     }
   })
   .addMasks({

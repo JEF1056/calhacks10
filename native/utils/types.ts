@@ -42,6 +42,9 @@ export type DeviceInformation = {
   headphonesConnected: boolean;
 };
 
+// ---------------------------------------------------------------- Bottom sheet
+export type BottomSheetView = "summary" | "options" | "transcribe" | "photo";
+
 // ---------------------------------------------------------------- Toasts
 export type ToastInformation = {
   title: string;

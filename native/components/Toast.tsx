@@ -1,10 +1,29 @@
 import React from "react";
-import { useColorScheme } from "react-native";
+import { ColorSchemeName, useColorScheme } from "react-native";
+import {
+  AlertOctagon,
+  Check,
+  Loader,
+  Mic,
+  TextQuote
+} from "@tamagui/lucide-icons";
 import { Toast, useToastState } from "@tamagui/toast";
 import { debounce } from "lodash";
+import { getRecoil, setRecoil } from "recoil-nexus";
 import { XStack, YStack } from "tamagui";
 
+import {
+  bottomSheetContentState,
+  bottomSheetOpenState,
+  llamaContextState,
+  whisperTranscriptState
+} from "../utils/atoms";
+import { realtimeLlamaInference } from "../utils/llama";
 import { getTheme } from "../utils/themes";
+import {
+  startWhisperRealtimeTranscription,
+  stopWhisperRealtimeTranscription
+} from "../utils/whisper";
 
 export function ToastComponent() {
   const colorScheme = useColorScheme();
@@ -63,4 +82,116 @@ export function ToastComponent() {
       </XStack>
     </Toast>
   );
+}
+
+// ------------------------------------ Shared Llama Toasts ------------------------------------
+export function showLlamaAsSummarizing(
+  currentToast,
+  colorScheme: ColorSchemeName
+) {
+  const theme = getTheme(colorScheme);
+  const bottomSheetContent = getRecoil(bottomSheetContentState);
+  const llamaContext = getRecoil(llamaContextState);
+
+  currentToast.hide();
+  currentToast.show("Summarizing", {
+    leftIcon: <TextQuote />,
+    message: "Slide To Stop",
+    backgroundColor: theme.pallete.blue[500],
+    color: theme.colors.text,
+    onDismiss: () => {
+      if (bottomSheetContent == "summary") {
+        showLlamaAsDone(currentToast, colorScheme);
+      }
+      llamaContext.stopCompletion();
+    }
+  });
+}
+
+export function showLlamaAsDone(currentToast, colorScheme: ColorSchemeName) {
+  const theme = getTheme(colorScheme);
+  const bottomSheetContent = getRecoil(bottomSheetContentState);
+  const llamaContext = getRecoil(llamaContextState);
+
+  currentToast.hide();
+  currentToast.show("Done", {
+    leftIcon: <Check />,
+    message: "Slide To Regenerate",
+    backgroundColor: theme.pallete.green[500],
+    color: theme.colors.text,
+    onDismiss: () => {
+      realtimeLlamaInference();
+      if (bottomSheetContent == "summary") {
+        showLlamaAsSummarizing(currentToast, colorScheme);
+      }
+    }
+  });
+}
+
+// ------------------------------------ Shared Whisper Toasts ------------------------------------
+export function showWhisperAsRecording(
+  currentToast,
+  colorScheme: ColorSchemeName
+) {
+  const theme = getTheme(colorScheme);
+
+  currentToast.hide();
+  currentToast.show("Recording", {
+    message: "Slide To Stop",
+    leftIcon: <Mic />,
+    backgroundColor: theme.pallete.amber[500],
+    onDismiss: () => {
+      stopWhisperRealtimeTranscription();
+    }
+  });
+}
+
+export function showWhisperAsProcessing(
+  currentToast,
+  colorScheme: ColorSchemeName
+) {
+  const theme = getTheme(colorScheme);
+
+  currentToast.hide();
+  currentToast.show("Processing", {
+    leftIcon: <Loader />,
+    backgroundColor: theme.pallete.blue[500],
+    color: theme.colors.text,
+    onDismiss: (event) => {
+      event.preventDefault();
+    }
+  });
+}
+
+export function showWhisperAsDone(currentToast, colorScheme: ColorSchemeName) {
+  const theme = getTheme(colorScheme);
+
+  currentToast.hide();
+  currentToast.show("Done!", {
+    leftIcon: <Check />,
+    backgroundColor: theme.pallete.green[500],
+    color: theme.colors.text,
+    message: "Slide To Continue",
+    onDismiss: () => {
+      setRecoil(bottomSheetContentState, "summary");
+      realtimeLlamaInference();
+      showLlamaAsSummarizing(currentToast, colorScheme);
+      setRecoil(whisperTranscriptState, undefined);
+    }
+  });
+}
+
+export function showWhisperAsError(currentToast, colorScheme: ColorSchemeName) {
+  const theme = getTheme(colorScheme);
+
+  currentToast.hide();
+  currentToast.show("Done!", {
+    leftIcon: <AlertOctagon />,
+    backgroundColor: theme.pallete.red[500],
+    color: theme.colors.text,
+    message: "Slide To Retry",
+    onDismiss: () => {
+      showWhisperAsRecording(currentToast, colorScheme);
+    }
+  });
 }

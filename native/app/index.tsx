@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-import { Camera, TextQuote, WrapText } from "@tamagui/lucide-icons";
-import { useToastController } from "@tamagui/toast";
-import { router } from "expo-router";
+import { Camera } from "@tamagui/lucide-icons";
+import { router, usePathname, useRouter } from "expo-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { getRecoil } from "recoil-nexus";
 import {
   Button,
   H3,
@@ -17,54 +17,50 @@ import {
   YGroup,
   YStack
 } from "tamagui";
-import { v4 as uuid } from "uuid";
 
 import AddPatientInfo from "../components/AddPatientInfo";
 import AudioPlayer from "../components/AudioPlayer";
 import { BottomSheetComponent } from "../components/BottomSheet";
+import Footer from "../components/Footer";
 import LlamaTranscript from "../components/LlamaTranscript";
 import { LoadingScreen } from "../components/LoadingScreen";
 import PatientRow from "../components/PatientRow";
+import SelectPatientSheet from "../components/SelectPatientSheet";
 import { ToastComponent } from "../components/Toast";
 import WhisperRecordButton from "../components/WhisperRecordButton";
 import WhisperTranscript from "../components/WhisperTranscript";
 import {
   bottomSheetContentState,
-  bottomSheetOpenState,
   currentSelectedPatientState,
   expectedDataBytesState,
   llamaContextState,
-  llamaInputState,
   modelsErrorsState,
   modelsLoadedState,
   patientInformationState,
   receivedDataBytesState,
-  themeState,
-  whisperTranscriptState
+  themeState
 } from "../utils/atoms";
-import { initializeLlama, realtimeLlamaInference } from "../utils/llama";
+import { initializeLlama } from "../utils/llama";
 import { mockData } from "../utils/mocks";
 import { getTheme } from "../utils/themes";
 import { initializeTrackPlayer } from "../utils/trackplayer";
 import {
   initializeWhisper,
-  mapWhisperTranscriptToProcessingState,
   stopWhisperRealtimeTranscription
 } from "../utils/whisper";
+import Header from "../components/Header";
 
 export default function Home() {
   const llamaContext = useRecoilValue(llamaContextState);
-  const setLlamaInput = useSetRecoilState(llamaInputState);
+  const routerPath = usePathname();
 
   const [modelsLoaded, setModelsLoaded] = useRecoilState(modelsLoadedState);
   const setModelsError = useSetRecoilState(modelsErrorsState);
   const setExpectedDataBytes = useSetRecoilState(expectedDataBytesState);
   const setReceivedDataBytes = useSetRecoilState(receivedDataBytesState);
-  const whisperTranscript = useRecoilValue(whisperTranscriptState);
-  const [currentSelectedPatient, setCurrentSelectedPatient] = useRecoilState(
+  const setCurrentSelectedPatient = useSetRecoilState(
     currentSelectedPatientState
   );
-  const setPatientInformation = useSetRecoilState(patientInformationState);
 
   const [bottomSheetContent, setBottomSheetContent] = useRecoilState(
     bottomSheetContentState
@@ -77,50 +73,15 @@ export default function Home() {
     setTheme(colorScheme);
   }, [colorScheme, setTheme]);
 
-  const currentToast = useToastController();
-  const [patientList, setPatientList] = useRecoilState(patientInformationState);
-
-  const showAsSummarizing = () => {
-    currentToast.show("Summarizing", {
-      leftIcon: <TextQuote />,
-      message: "Slide To Stop",
-      backgroundColor: theme.pallete.blue[500],
-      color: theme.colors.text,
-      onDismiss: () => {
-        if (bottomSheetContent == "summary") {
-          showAsDone();
-        }
-        llamaContext.stopCompletion();
-      }
-    });
-  };
-
-  const showAsDone = () => {
-    currentToast.show("Done!", {
-      leftIcon: <WrapText />,
-      message: "Slide To Regenerate",
-      backgroundColor: theme.pallete.green[500],
-      color: theme.colors.text,
-      onDismiss: () => {
-        realtimeLlamaInference();
-        if (bottomSheetContent == "summary") {
-          showAsSummarizing();
-        }
-      }
-    });
-  };
+  const [patientInformation, setPatientInformation] = useRecoilState(
+    patientInformationState
+  );
 
   useEffect(() => {
-    if (mapWhisperTranscriptToProcessingState(whisperTranscript) === "done") {
-      setLlamaInput(whisperTranscript.data.result);
-      realtimeLlamaInference();
-      showAsSummarizing();
-
-      if (bottomSheetContent != "summary") {
-        currentToast.hide();
-      }
+    if (routerPath == "/") {
+      setCurrentSelectedPatient(undefined);
     }
-  }, [currentToast, whisperTranscript, setLlamaInput, bottomSheetContent]);
+  }, [routerPath]);
 
   useEffect(() => {
     const init = async () => {
@@ -173,54 +134,7 @@ export default function Home() {
 
   switch (bottomSheetContent) {
     case "options":
-      bottomSheetInternals = (
-        <>
-          <Sheet.ScrollView
-            width="100%"
-            flexGrow={1}
-          >
-            <YGroup>
-              {patientList.map((patient) => (
-                <Button
-                  backgroundColor={
-                    currentSelectedPatient &&
-                    currentSelectedPatient.id == patient.id &&
-                    theme.colors.secondary
-                  }
-                  key={patient.id}
-                  onPress={() => {
-                    setCurrentSelectedPatient(patient);
-                    router.push(`/pages/PatientDetail`);
-                  }}
-                >
-                  {patient.name}
-                </Button>
-              ))}
-            </YGroup>
-          </Sheet.ScrollView>
-
-          <Separator
-            borderColor={theme.colors.neutral}
-            marginVertical="$4"
-          />
-
-          <XGroup
-            paddingBottom="$2"
-            gap="$2"
-          >
-            <WhisperRecordButton />
-
-            <Button
-              size={"$6"}
-              onPress={() => {
-                setBottomSheetContent("photo");
-              }}
-            >
-              <Camera size="$2" />
-            </Button>
-          </XGroup>
-        </>
-      );
+      bottomSheetInternals = <SelectPatientSheet />;
       break;
     case "transcribe":
       bottomSheetInternals = (
@@ -265,41 +179,16 @@ export default function Home() {
         }}
       />
 
-      {/* Header */}
-      <YStack
-        backgroundColor={theme.colors.accent}
-        paddingHorizontal="$4"
-        height="$8"
-        justifyContent="center"
-        alignContent="center"
-        borderBottomLeftRadius={"$4"}
-        borderBottomRightRadius={"$4"}
-      >
-        <XStack
-          justifyContent="flex-start"
-          alignItems="center"
-          flexShrink={1}
-          onLongPress={() => {
-            router.push("/pages/Developer");
-          }}
-          gap="$2"
-        >
-          <Image
-            source={require("../../native/assets/icon.png")}
-            height={"$5"}
-            width={"$5"}
-          />
-          <H3>MediScript</H3>
-        </XStack>
-      </YStack>
+      <Header />
 
       {/* Content */}
       <ScrollView flexGrow={1}>
-        {patientList.map((patient) => (
+        {patientInformation.map((patient, index) => (
           <>
             <PatientRow
               key={patient.id}
               patientId={patient.id}
+              index={index}
             />
             <Separator />
           </>
@@ -307,17 +196,7 @@ export default function Home() {
       </ScrollView>
 
       {/* Footer */}
-      <YStack
-        backgroundColor={theme.colors.accent}
-        paddingHorizontal="$4"
-        height="$8"
-        justifyContent="center"
-        alignContent="center"
-        borderTopLeftRadius={"$4"}
-        borderTopRightRadius={"$4"}
-      >
-        <AddPatientInfo />
-      </YStack>
+      <Footer />
     </YStack>
   );
 }

@@ -187,7 +187,7 @@ export default function AudioPlayer() {
       >
         <Group.Item>
           <Button //regenerate button
-            backgroundColor={theme.colors.constrast}
+            backgroundColor={theme.colors.primary}
             color={theme.colors.text}
             pressStyle={{ backgroundColor: theme.colors.primary }}
             hoverStyle={{ backgroundColor: theme.colors.primary }}

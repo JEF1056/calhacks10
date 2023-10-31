@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-import { TextQuote, WrapText } from "@tamagui/lucide-icons";
 import { useToastController } from "@tamagui/toast";
 import { useRecoilValue } from "recoil";
-import { H2, H3, Separator, Sheet, Text } from "tamagui";
+import { H3, Separator, Sheet, Text } from "tamagui";
 
 import {
   bottomSheetContentState,
   llamaContextState,
   llamaOutputState
 } from "../utils/atoms";
-import { realtimeLlamaInference } from "../utils/llama";
 import { getTheme } from "../utils/themes";
+
+import { showLlamaAsDone } from "./Toast";
 
 export default function LlamaTranscript() {
   const llamaContext = useRecoilValue(llamaContextState);
@@ -22,43 +22,13 @@ export default function LlamaTranscript() {
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
 
-  const showAsSummarizing = () => {
-    currentToast.show("Summarizing", {
-      leftIcon: <TextQuote />,
-      message: "Slide To Stop",
-      backgroundColor: theme.pallete.blue[500],
-      color: theme.colors.text,
-      onDismiss: () => {
-        if (bottomSheetContent == "summary") {
-          showAsDone();
-        }
-        llamaContext.stopCompletion();
-      }
-    });
-  };
-
-  const showAsDone = () => {
-    currentToast.show("Done!", {
-      leftIcon: <WrapText />,
-      message: "Slide To Regenerate",
-      backgroundColor: theme.pallete.green[500],
-      color: theme.colors.text,
-      onDismiss: () => {
-        realtimeLlamaInference();
-        if (bottomSheetContent == "summary") {
-          showAsSummarizing();
-        }
-      }
-    });
-  };
-
   useEffect(() => {
     if (bottomSheetContent != "summary") {
       currentToast.hide();
     }
 
     if (llamaOutput.isProcessing == false && bottomSheetContent == "summary") {
-      showAsDone();
+      showLlamaAsDone(currentToast, colorScheme);
     }
   }, [currentToast, llamaOutput, llamaContext, bottomSheetContent]);
 
@@ -70,7 +40,7 @@ export default function LlamaTranscript() {
       </Text>
       <Separator
         marginVertical={15}
-        borderColor={theme.colors.accent}
+        borderColor={theme.colors.backgroundContrast}
         borderWidth={1}
         width="100%"
         borderRadius={"$10"}
