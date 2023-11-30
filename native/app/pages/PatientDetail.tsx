@@ -6,7 +6,6 @@ import { useRecoilValue } from "recoil";
 import {
   AnimatePresence,
   Avatar,
-  Card,
   H2,
   H4,
   Paragraph,
@@ -32,6 +31,8 @@ export default function PatientDetail() {
 
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme);
+
+  console.log(currentSelectedPatient);
 
   useEffect(() => {
     if (!currentSelectedPatient) {

@@ -22,6 +22,7 @@ import AddPatientInfo from "../components/AddPatientInfo";
 import AudioPlayer from "../components/AudioPlayer";
 import { BottomSheetComponent } from "../components/BottomSheet";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 import LlamaTranscript from "../components/LlamaTranscript";
 import { LoadingScreen } from "../components/LoadingScreen";
 import PatientRow from "../components/PatientRow";
@@ -48,7 +49,6 @@ import {
   initializeWhisper,
   stopWhisperRealtimeTranscription
 } from "../utils/whisper";
-import Header from "../components/Header";
 
 export default function Home() {
   const llamaContext = useRecoilValue(llamaContextState);

@@ -24,7 +24,7 @@ export default function LlamaTranscript() {
   const theme = getTheme(colorScheme);
 
   useEffect(() => {
-    if (bottomSheetContent != "summary") {
+    if (bottomSheetContent != "summary" && currentToast.hide) {
       currentToast.hide();
     }
 

@@ -84,7 +84,9 @@ export function showLlamaAsSummarizing(
   const bottomSheetContent = getRecoil(bottomSheetContentState);
   const llamaContext = getRecoil(llamaContextState);
 
-  currentToast.hide();
+  if (currentToast.hide) {
+    currentToast.hide();
+  }
   currentToast.show("Summarizing", {
     leftIcon: <TextQuote />,
     message: "Slide To Stop",
@@ -103,19 +105,23 @@ export function showLlamaAsDone(currentToast, colorScheme: ColorSchemeName) {
   const theme = getTheme(colorScheme);
   const bottomSheetContent = getRecoil(bottomSheetContentState);
 
-  currentToast.hide();
-  currentToast.show("Done", {
-    leftIcon: <Check />,
-    message: "Slide To Regenerate",
-    backgroundColor: theme.pallete.green[500],
-    color: theme.colors.text,
-    onDismiss: () => {
-      realtimeLlamaInference();
-      if (bottomSheetContent == "summary") {
-        showLlamaAsSummarizing(currentToast, colorScheme);
+  if (currentToast.hide) {
+    currentToast.hide();
+  }
+  if (currentToast.show) {
+    currentToast.show("Done", {
+      leftIcon: <Check />,
+      message: "Slide To Regenerate",
+      backgroundColor: theme.pallete.green[500],
+      color: theme.colors.text,
+      onDismiss: () => {
+        realtimeLlamaInference();
+        if (bottomSheetContent == "summary") {
+          showLlamaAsSummarizing(currentToast, colorScheme);
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 // ------------------------------------ Shared Whisper Toasts ------------------------------------
@@ -125,7 +131,9 @@ export function showWhisperAsRecording(
 ) {
   const theme = getTheme(colorScheme);
 
-  currentToast.hide();
+  if (currentToast.hide) {
+    currentToast.hide();
+  }
   currentToast.show("Recording", {
     message: "Slide To Stop",
     leftIcon: <Mic />,
@@ -142,7 +150,9 @@ export function showWhisperAsProcessing(
 ) {
   const theme = getTheme(colorScheme);
 
-  currentToast.hide();
+  if (currentToast.hide) {
+    currentToast.hide();
+  }
   currentToast.show("Processing", {
     leftIcon: <Spinner color={theme.colors.text} />,
     backgroundColor: theme.pallete.blue[500],
@@ -157,7 +167,9 @@ export function showWhisperAsDone(currentToast, colorScheme: ColorSchemeName) {
   const theme = getTheme(colorScheme);
 
   if (getRecoil(bottomSheetOpenState)) {
-    currentToast.hide();
+    if (currentToast.hide) {
+      currentToast.hide();
+    }
     currentToast.show("Done!", {
       leftIcon: <Check />,
       backgroundColor: theme.pallete.green[500],
@@ -179,7 +191,9 @@ export function showWhisperAsError(currentToast, colorScheme: ColorSchemeName) {
   const theme = getTheme(colorScheme);
 
   if (getRecoil(bottomSheetOpenState)) {
-    currentToast.hide();
+    if (currentToast.hide) {
+      currentToast.hide();
+    }
     currentToast.show("Done!", {
       leftIcon: <AlertOctagon />,
       backgroundColor: theme.pallete.red[500],

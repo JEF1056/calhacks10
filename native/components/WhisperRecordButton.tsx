@@ -28,11 +28,15 @@ export default function WhisperRecordButton() {
       flexGrow={1}
       onPress={() => {
         if (currentSelectedPatient != undefined) {
-          currentToast.hide();
+          if (currentToast.hide) {
+            currentToast.hide();
+          }
           startWhisperRealtimeTranscription();
           setBottomSheetContent("transcribe");
         } else {
-          currentToast.hide();
+          if (currentToast.hide) {
+            currentToast.hide();
+          }
           currentToast.show("Error", {
             message: "Please select a patient first",
             leftIcon: <AlertOctagon />,

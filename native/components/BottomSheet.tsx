@@ -33,7 +33,7 @@ export function closeBottomSheet(currentToast, onClose?: () => void) {
     onClose();
   }
 
-  if (currentToast != undefined) {
+  if (currentToast != undefined && currentToast.hide) {
     currentToast.hide();
   }
 
